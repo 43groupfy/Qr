@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="./qryt.png" type="image/x-icon">
+  <!-- font awesome cdn -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <title>QR Code | Tatang Aditya</title>
+
+<style>
+
+/*  Google font - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* Style.css */
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+body{
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0, 51, 139);
+}
+
+.container{
+  width: 100%;
+  max-width: 410px;
+  background: #fff;
+  border-radius: 7px;
+  padding: 15px 25px;
+  overflow: hidden;
+  box-shadow: 0 0 10px #fff;
+}
+
+button{
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* Nav */
+nav{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+nav button{
+  width: calc(100% / 2 - 5px);
+  font-size: 1.2rem;
+  text-align: center;
+  height: 45px;
+  letter-spacing: 2px;
+  border-bottom: 2px solid #ccc;
+  opacity: 0.5;
+}
+
+nav button.active{
+  border-bottom: 2px solid #0283d8;
+  border-radius: 0px;
+  font-weight: 700;
+  color: #0283d8;
+  opacity: 1;
+}
+
+::-webkit-scrollbar{
+  display: none;
+}
+
+/* generator.css */
+.generator-button{
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  background-color: green;
+  cursor: pointer;
+}
+.generator{
+    overflow: hidden;
+    height: 215px;
+    transition: height 0.2s;
+  }
+  
+  .generator.active{
+    height: 545px;
+  }
+  
+  .generator h1{
+    font-size: 21px;
+  }
+  
+  .generator p{
+    color: #555;
+    font-size: 16px;
+    margin-top: 5px;
+  }
+  
+  .generator-form{
+    margin: 20px 0;
+  } 
+  
+  .generator-form input{
+    width: 100%;
+    height: 55px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid #999;
+    font-size: 18px;
+    padding: 0 15px;
+  }
+  
+  .generator-form button{
+    width: 100%;
+    height: 55px;
+    background: #0283d8;
+    color: #fff;
+    font-size: 17px;
+    margin-top: 20px;
+  }
+  
+  .generator-img{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 33px;
+    border: 2px dashed #555;
+    pointer-events: none;
+  }
+  
+  .generator-img img{
+    width: 200px;
+    height: 200px;
+  }
+  
+  .generator-btn{
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .generator-btn .btn-link{
+    background: transparent;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    font-weight: 500;
+    font-size: 0.8rem;
+    padding: 10px 10px 10px 0;
+    transition: 0.4s;
+  }
+  
+  .generator-btn .btn-link:hover{
+    padding: 10px;
+    background: rgba(36, 113, 255, 0.1);
+  }
+
+/* scanner.css */
+  .scanner{
+    overflow: hidden;
+    height: 280px;
+    transition: 0.2s;
+  }
+  
+  .scanner h1{
+    font-size: 21px;
+    margin-bottom: 15px;
+  }
+  
+  .scanner h1 i{
+    font-size: x-large;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  
+  .scanner h1 .fa-camera{
+    color: #0283d8;
+  }
+  
+  .scanner h1 .fa-circle-stop{
+    color: crimson;
+    display: none;
+  }
+  
+  .scanner-form{
+    height: 225px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px dashed #777;
+  }
+  
+  .scanner-form img{
+    max-width: 180px;
+    display: none;
+  }
+  
+  .scanner-form video{
+    width: 100%;
+    height: 100%;
+    display: none;
+  }
+  
+  .scanner-form .content{
+    color: #0283d8;
+  }
+  
+  .scanner-form .content i{
+    font-size: 4rem;
+  }
+  
+  .scanner-form .content p{
+    font-size: 1.2rem;
+    margin-top: 15px;
+  }
+  
+  .scanner-details{
+    margin-top: 15px;
+  }
+  
+  .scanner-details textarea{
+    color: #333;
+    width: 100%;
+    height: 150px;
+    padding: 10px 15px;
+    outline: none;
+    font-size: 16px;
+    resize: none;
+    border-radius: 5px;
+  }
+  
+  .scanner-details .btn{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .scanner-details .btn button{
+    height: 50px;
+    width: calc(100% / 2 - 10px);
+    background: #237eb6;
+    color: #fff;
+    font-size: 16px;
+    letter-spacing: 1px;
+    border-radius: 5px;
+  }
+  
+  /* Active Scanner */
+  .scanner.active{
+    height: 530px;
+  }
+  
+  .scanner.active .scanner-form{
+    pointer-events: none;
+  }
+  
+  /* Active Iamge */
+  .scanner-form.active-img img{
+    display: block;
+  }
+  
+  .scanner-form.active-img .content,
+  .scanner-form.active-img video{
+    display: none;
+  }
+  
+  /* Active Video */
+  .scanner-form.active-video video{
+    display: block;
+  }
+  
+  .scanner-form.active-video .content,
+  .scanner-form.active-video img{
+    display: none;
+  }
+  
+  .pointerEvents{
+    pointer-events: none;
+  }
+  
+</style>
+</head>
+<body>
+  <div class="container">
+    <!-- Nav -->
+    <nav>
+      <button class="nav-gene active">Generator</button>
+      <button class="nav-scan">Scanner</button>
+    </nav>
+    <!-- Generator -->
+    <div class="generator">
+      <h1>QR Code Generator</h1>
+      <p>Paste a url or enter text to create QR code</p>
+
+      <div class="generator-form">
+        <input type="text" placeholder="Enter text or url">
+        <button>Generate QR Code</button>
+      </div>
+
+      <div class="generator-img">
+        <img src="./qryt.png" alt="qr-code">
+      </div>
+
+      <div class="generator-btn">
+        <button class="btn-link">Download <i class="fa-solid fa-download"></i></button>
+      </div>
+    </div>
+
+    <!-- Scanner -->
+    <div class="scanner" style="display: none;">
+      <h1>
+        QR Code Scanner or Reader
+        <i class="fa-solid fa-camera"></i>
+        <i class="fa-solid fa-circle-stop"></i>
+      </h1>
+
+      <form class="scanner-form">
+        <input type="file" accept="image/*" hidden>
+
+        <img src="./qryt.png" alt="qr-code">
+        <video style="-webkit-transform: scaleX(-1);transform: scaleX(-1);"></video>
+
+        <div class="content">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <p>Upload QR Code to Scan</p>
+        </div>
+      </form>
+
+      <div class="scanner-details">
+        <textarea disabled>https://www.youtube.com/channel/UCGRDayozk2qch3vw-qAtQng</textarea>
+
+        <div class="btn">
+          <button class="close">Close</button>
+          <button class="copy">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main.js -->
+<script>
+  const generatorTab = document.querySelector(".nav-gene");
+const scannerTab = document.querySelector(".nav-scan");
+
+generatorTab.addEventListener("click", () => {
+  generatorTab.classList.add("active");
+  scannerTab.classList.remove("active");
+
+  document.querySelector(".scanner").style.display = "none";
+  document.querySelector(".generator").style.display = "block";
+})
+
+scannerTab.addEventListener("click", () => {
+  scannerTab.classList.add("active");
+  generatorTab.classList.remove("active");
+
+  document.querySelector(".scanner").style.display = "block";
+  document.querySelector(".generator").style.display = "none";
+})
+</script>
+
+  <!-- generator.js -->
+<script>
+  const generatorDiv = document.querySelector(".generator");
+const generateBtn = generatorDiv.querySelector(".generator-form button");
+const qrInput = generatorDiv.querySelector(".generator-form input");
+const qrImg = generatorDiv.querySelector(".generator-img img");
+const downloadBtn = generatorDiv.querySelector(".generator-btn .btn-link");
+
+
+let imgURL = '';
+
+generateBtn.addEventListener("click", () => {
+  let qrValue = qrInput.value;
+  if(!qrValue.trim()) return; // if value is empty -> stop here
+
+  generateBtn.innerText = "Generating QR Code...";
+  // if the value is valid -> using qrserver api to generate QR code
+  imgURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrValue}`;
+  qrImg.src = imgURL;
+
+  qrImg.addEventListener("load", () => {
+    generatorDiv.classList.add("active");
+    generateBtn.innerText = "Generate QR Code";
+  })
+})
+
+// Dowload QR Code
+downloadBtn.addEventListener("click", () => {
+  if(!imgURL) return;
+  fetchImage(imgURL)
+})
+
+function fetchImage(url){
+  fetch(url).then(res => res.blob()).then(file => {
+    let tempFile = URL.createObjectURL(file);
+    let file_name = url.split("/").pop().split(".")[0];
+    let extension = file.type.split("/")[1];
+    download(tempFile, file_name, extension);
+  })
+  .catch(() => imgURL = '');
+}
+
+function download(tempFile, file_name, extension){
+  let a = document.createElement('a');
+  a.href = tempFile;
+  a.download = `${file_name}.${extension}`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+// if value is empty -> remove active class
+qrInput.addEventListener("input", () => {
+  if(!qrInput.value.trim())
+    return generatorDiv.classList.remove("active");
+})
+</script>
+  <!-- scanner.js -->
+<script>
+  const scannerDiv = document.querySelector(".scanner");
+
+const camera = scannerDiv.querySelector("h1 .fa-camera");
+const stopCam = scannerDiv.querySelector("h1 .fa-circle-stop");
+
+const form = scannerDiv.querySelector(".scanner-form");
+const fileInput = form.querySelector("input");
+const p = form.querySelector("p");
+const img = form.querySelector("img");
+const video = form.querySelector("video");
+const content = form.querySelector(".content");
+
+const textarea = scannerDiv.querySelector(".scanner-details textarea");
+const copyBtn = scannerDiv.querySelector(".scanner-details .copy");
+const closeBtn = scannerDiv.querySelector(".scanner-details .close");
+
+// Input File
+form.addEventListener("click", () => fileInput.click());
+
+// Scan QR Code Image
+fileInput.addEventListener("change", e => {
+  let file = e.target.files[0];
+  if(!file) return;
+  fetchRequest(file);
+})
+
+function fetchRequest(file){
+  let formData = new FormData();
+  formData.append("file", file);
+
+  p.innerText = "Scanning QR Code...";
+
+  fetch(`https://api.qrserver.com/v1/read-qr-code/`, {
+    method: "POST", body: formData
+  }).then(res => res.json()).then(result => {
+    let text = result[0].symbol[0].data;
+
+    if(!text)
+      return p.innerText = "Couldn't Scan QR Code";
+    
+    scannerDiv.classList.add("active");
+    form.classList.add("active-img");
+
+    img.src = URL.createObjectURL(file);
+    textarea.innerText = text;
+  })
+}
+
+// Scan QR Code Camera
+let scanner;
+
+camera.addEventListener("click", () => {
+  camera.style.display = "none";
+  form.classList.add("pointerEvents");
+  p.innerText = "Scanning QR Code...";
+
+  scanner = new Instascan.Scanner({video: video});
+
+  Instascan.Camera.getCameras()
+    .then(cameras => {
+      if(cameras.length > 0){
+        scanner.start(cameras[0]).then(() => {
+          form.classList.add("active-video");
+          stopCam.style.display = "inline-block";
+        })
+      }else{
+        console.log("No Cameras Found");
+      }
+    })
+    .catch(err => console.error(err))
+  
+  // addListener not addEventListener
+  scanner.addListener("scan", c => {
+    scannerDiv.classList.add("active");
+    textarea.innerText = c;
+  })
+})
+
+
+// Copy
+copyBtn.addEventListener("click", () => {
+  let text = textarea.textContent;
+  navigator.clipboard.writeText(text);
+})
+
+// Close
+closeBtn.addEventListener("click", () => stopScan());
+stopCam.addEventListener("click", () => stopScan());
+
+// Stop Scan
+function stopScan(){
+  p.innerText = "Upload QR Code to Scan";
+
+  camera.style.display = "inline-block";
+  stopCam.style.display = "none";
+  
+  form.classList.remove("active-video", "active-img", "pointerEvents");
+  scannerDiv.classList.remove("active");
+
+  if(scanner) scanner.stop();
+}
+</script>
+  <script src="instascan.min.js"></script>
+</body>
+</html>

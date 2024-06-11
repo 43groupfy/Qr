@@ -10,11 +10,15 @@ var webkit = false;
 var moz = false;
 var v = null;
 
-var imghtml = '<div id="qrfile"><canvas id="out-canvas" width="320" height="320"></canvas>' +
-    '<div id="imghelp">drag and drop a QRCode here' +
-    '<br>or select a file' +
-    '<input type="file" onchange="handleFiles(this.files)" value="Pilih Berkas" />' + // Mengubah teks "Choose File" menjadi "Pilih Berkas"
-    '</div>' +
+var imghtml = '<div id="qrfile">' +
+    '<label for="file-input">' +
+    '<span class="text"><b>Upload your file</b>' +
+    '<br>file should be .jpeg, .jpg, or png</span><br><br>' +
+    '<div id="imghelp">' +
+    '<i class="fa fa-cloud-upload"></i>' +
+    '<br><br>Upload QR Code to Scan</div>' +
+    '<input type="file" id="file-input" onchange="handleFiles(this.files)" style="display: none;" />' +
+    '</label>' +
     '</div>';
 
 
@@ -69,6 +73,7 @@ function handleFiles(f) {
         })(f[i]);
         reader.readAsDataURL(f[i]);
     }
+    document.getElementById('imghelp').classList.add('input-received');
 }
 
 function initCanvas(w, h) {
@@ -205,8 +210,8 @@ function setwebcam2(options) {
         n.webkitGetUserMedia({ video: options, audio: false }, success, error);
     }
 
-    document.getElementById("qrimg").style.opacity = 0.2;
-    document.getElementById("webcamimg").style.opacity = 1.0;
+    document.getElementById("qrimg").style.opacity = 1.0;
+    document.getElementById("webcamimg").style.opacity = 0.5;
 
     stype = 1;
     setTimeout(captureToCanvas, 500);
@@ -217,8 +222,8 @@ function setimg() {
     if (stype == 2)
         return;
     document.getElementById("outdiv").innerHTML = imghtml;
-    document.getElementById("qrimg").style.opacity = 1.0;
-    document.getElementById("webcamimg").style.opacity = 0.2;
+    document.getElementById("qrimg").style.opacity = 0.5;
+    document.getElementById("webcamimg").style.opacity = 1.0;
     var qrfile = document.getElementById("qrfile");
     qrfile.addEventListener("dragenter", dragenter, false);
     qrfile.addEventListener("dragover", dragover, false);

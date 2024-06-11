@@ -10,12 +10,16 @@
   <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Web QR</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
-        body{
-        width:100%;
-        text-align:center;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+body{
+    width:100%;
+    text-align:center;
+    font-family: 'Poppins';
+}
     img{
         border:0;
     }
@@ -58,11 +62,19 @@
         text-decoration: none;
         color: black;
     }
+    #mp1{
+        text-align:center;
+        font-size:35px;
+    }
     #footer a{
         color: black;
     }
     .tsel{
         padding:0;
+    }
+    table{
+      border: 2px solid #333;
+      padding: 30px 60px;
     }
     .icon {
       font-size: 48px;
@@ -73,25 +85,66 @@
     }
     button {
       margin: 10px auto 20px;
-      padding: 5px 10px;
+      padding: 12px 10px;
       font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      width: 300px;
+      background: #0283d8;
+      color: #fff;
+      cursor: pointer;
     }
+
+    #downloadLink{
+      text-decoration: none;
+      margin-top: 10px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    /* Tambahan */
+
+  input{
+      border: 2px solid;
+      text-align: center;
+      padding: 12px;
+      width: 272px;
+      font-size: 16px;
+      margin: 10px 0 0px;
+      border-radius: 5px;
+      word-wrap: break-word; /* Membungkus teks panjang ke baris berikutnya */
+      white-space: pre-wrap; /* Menyimpan spasi dan pembatas baris */
+  }
+
+  /*#qrimage{
+    border: 2px dashed #333;
+    border-radius: 5px;
+    padding: 25px;
+  } */
   </style>
 
   <script type="text/javascript">
-    function create() {
-        var data = document.getElementById("data").value;
-        var qrImageUrl = 'https://api.qrserver.com/v1/create-qr-code/?data=' + encodeURIComponent(data);
-        var qrImage = document.createElement('img');
-        qrImage.id = 'qrCodeImg';
-        qrImage.src = qrImageUrl;
-        qrImage.onload = function() {
-            convertToCanvas(qrImageUrl);
-        };
+function create() {
+    var data = document.getElementById("data").value;
+    var qrImageUrl = 'https://api.qrserver.com/v1/create-qr-code/?data=' + encodeURIComponent(data);
+    var qrImage = document.createElement('img');
+    qrImage.id = 'qrCodeImg';
+    qrImage.src = qrImageUrl;
+    qrImage.onload = function() {
+        convertToCanvas(qrImageUrl);
+    };
 
-        document.getElementById("qrimage").innerHTML = "";
-        document.getElementById("qrimage").appendChild(qrImage);
-    }
+    // Menambahkan CSS langsung melalui JavaScript
+    qrImage.style.border = '2px dashed #333';
+    qrImage.style.borderRadius = '5px';
+    qrImage.style.padding = '25px';
+    qrImage.style.display = 'inline-block'; // agar elemen img menjadi block
+
+    var qrImageContainer = document.getElementById("qrimage");
+    qrImageContainer.innerHTML = "";
+    qrImageContainer.appendChild(qrImage);
+}
+
 
     function convertToCanvas(url) {
         var canvas = document.createElement('canvas');
@@ -124,28 +177,28 @@
     <div id="header">
       <p id="mp1">QR Code scanner</p>
       <ul>
-        <li><a href="index.html">Scan</a></li>
-        <li><a href="create.html">Create</a></li>
+        <li><a href="3.html">Scan</a></li>
+        <li style="border: medium none;"><a href="create1.html">Create</a></li>
       </ul>
     </div>
     <div id="mainbody">
-      <p style="font-size:25px;text-align:center;">Create QR Code</p>
       <table border="0" align="center">
         <tr>
           <td>
-            <p style="font-size:20px;text-align:center;">Enter URL or text:</p>
-            <textarea cols="40" rows="3" id="data" required></textarea>
+            <b style="font-size: 28px;">QR Code Generator</b>
+            <p style="font-size: 13px;"></p>
+            <input type="text" id="data" size="40" placeholder="Paste a URL or type text here...">
           </td>
         </tr>
         <tr>
           <td align="center">
-            <button onclick="create()">Create</button>
+            <button onclick="create()">Generate QR Code</button>
           </td>
         </tr>
         <tr>
           <td align="center">
             <div id="qrimage"></div>
-            <a id="downloadLink" href="#" download="qrcode.png" style="display:none; margin-top:10px;">Download QR Code</a>
+            <a id="downloadLink" href="#" download="qrcode.png" style="display:none; margin-top:10px;"><i class="fas fa-download"></i> Download QR Code</a>
           </td>
         </tr>
       </table>

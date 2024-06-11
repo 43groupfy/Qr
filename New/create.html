@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="description" content="QRCode scanner" />
+  <meta name="keywords" content="qrcode,scanner,barcode, javascript" />
+  <meta name="language" content="English" />
+  <meta name="copyright" content="Lazar Laszlo (c) 2011" />
+  <meta name="Revisit-After" content="1 Days"/>
+  <meta name="robots" content="index, follow"/>
+  <title>Web QR</title>
+
+  <style>
+        body{
+        width:100%;
+        text-align:center;
+    }
+    img{
+        border:0;
+    }
+    #main{
+        margin: 15px auto;
+        background:white;
+        overflow: auto;
+        width: 100%;
+    }
+    #out-canvas {
+        width: 93%;
+        height: 125%;
+        padding: 10px;
+        filter: blur(5px)
+    }
+    #header{
+        background:white;
+        margin-bottom:15px;
+    }
+    #mainbody{
+        background: white;
+        width:100%;
+        height: 100%;
+    }
+    #footer{
+        background:white;
+    }
+    ul{
+        margin-bottom:0;
+        margin-right:40px;
+    }
+    li{
+        display:inline;
+        padding-right: 0.5em;
+        padding-left: 0.5em;
+        font-weight: bold;
+        border-right: 1px solid #333333;
+    }
+    li a{
+        text-decoration: none;
+        color: black;
+    }
+    #footer a{
+        color: black;
+    }
+    .tsel{
+        padding:0;
+    }
+    .icon {
+      font-size: 48px;
+      cursor: pointer;
+    }
+    #result{
+        width:285px;
+    }
+    button {
+      margin: 10px auto 20px;
+      padding: 5px 10px;
+      font-size: 16px;
+    }
+  </style>
+
+  <script type="text/javascript">
+    function create() {
+        var data = document.getElementById("data").value;
+        var qrImageUrl = 'https://api.qrserver.com/v1/create-qr-code/?data=' + encodeURIComponent(data);
+        var qrImage = document.createElement('img');
+        qrImage.id = 'qrCodeImg';
+        qrImage.src = qrImageUrl;
+        qrImage.onload = function() {
+            convertToCanvas(qrImageUrl);
+        };
+
+        document.getElementById("qrimage").innerHTML = "";
+        document.getElementById("qrimage").appendChild(qrImage);
+    }
+
+    function convertToCanvas(url) {
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var image = new Image();
+        image.crossOrigin = "Anonymous";
+        image.onload = function() {
+            canvas.width = image.width;
+            canvas.height = image.height;
+            ctx.drawImage(image, 0, 0);
+            var dataURL = canvas.toDataURL('image/png');
+
+            var downloadLink = document.getElementById("downloadLink");
+            downloadLink.href = dataURL;
+            downloadLink.style.display = "block";
+            
+            // Generate the filename with the current date and time
+            var currentDateTime = new Date();
+            var formattedDate = currentDateTime.toLocaleString().replace(/[:]/g, '-').replace(/[/]/g, '-');
+            var fileName = "QR code - " + formattedDate + ".png";
+            downloadLink.download = fileName;
+        };
+        image.src = url;
+    }
+  </script>
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <p id="mp1">QR Code scanner</p>
+      <ul>
+        <li><a href="index.html">Scan</a></li>
+        <li><a href="create.html">Create</a></li>
+      </ul>
+    </div>
+    <div id="mainbody">
+      <p style="font-size:25px;text-align:center;">Create QR Code</p>
+      <table border="0" align="center">
+        <tr>
+          <td>
+            <p style="font-size:20px;text-align:center;">Enter URL or text:</p>
+            <textarea cols="40" rows="3" id="data" required></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <button onclick="create()">Create</button>
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <div id="qrimage"></div>
+            <a id="downloadLink" href="#" download="qrcode.png" style="display:none; margin-top:10px;">Download QR Code</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div id="footer"></div>
+  </div>
+</body>
+</html>

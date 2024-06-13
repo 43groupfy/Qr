@@ -211,8 +211,12 @@ function setwebcam2(options) {
     }
 
     document.getElementById("qrimg").style.opacity = 1.0;
-    document.getElementById("webcamimg").style.opacity = 0.5;
-    document.getElementById("webcamimg").style.color = "#ddd";
+    document.getElementById("qrimg").style.color = "#333";
+    document.getElementById("qrimg").style.backgroundColor = "#fff";
+    document.getElementById("webcamimg").style.opacity = 1.0;
+    document.getElementById("webcamimg").style.color = "#fff";
+    document.getElementById("webcamimg").style.backgroundColor = "#0283d8";
+
 
     stype = 1;
     setTimeout(captureToCanvas, 500);
@@ -223,9 +227,14 @@ function setimg() {
     if (stype == 2)
         return;
     document.getElementById("outdiv").innerHTML = imghtml;
-    document.getElementById("qrimg").style.opacity = 0.5;
-    document.getElementById("qrimg").style.color = "#ddd";
     document.getElementById("webcamimg").style.opacity = 1.0;
+    document.getElementById("webcamimg").style.color = "#333";
+    document.getElementById("webcamimg").style.backgroundColor = "#fff";
+    document.getElementById("qrimg").style.opacity = 1.0;
+    document.getElementById("qrimg").style.color = "#fff";
+    document.getElementById("qrimg").style.backgroundColor = "#0283d8";
+    
+    
     var qrfile = document.getElementById("qrfile");
     qrfile.addEventListener("dragenter", dragenter, false);
     qrfile.addEventListener("dragover", dragover, false);

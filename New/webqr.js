@@ -212,6 +212,7 @@ function setwebcam2(options) {
 
     document.getElementById("qrimg").style.opacity = 1.0;
     document.getElementById("webcamimg").style.opacity = 0.5;
+    document.getElementById("webcamimg").style.color = "#ddd";
 
     stype = 1;
     setTimeout(captureToCanvas, 500);
@@ -223,6 +224,7 @@ function setimg() {
         return;
     document.getElementById("outdiv").innerHTML = imghtml;
     document.getElementById("qrimg").style.opacity = 0.5;
+    document.getElementById("qrimg").style.color = "#ddd";
     document.getElementById("webcamimg").style.opacity = 1.0;
     var qrfile = document.getElementById("qrfile");
     qrfile.addEventListener("dragenter", dragenter, false);

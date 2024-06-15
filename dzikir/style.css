@@ -5,7 +5,7 @@ body {
     justify-content: center;
     margin: 0;
     font-family: 'Arial', sans-serif;
-    background: #c3cfe2;
+    background: #fff;
 }
 
 .counter {
@@ -124,17 +124,17 @@ label input[type="checkbox"] {
 }
 
 #restart-button {
-    padding: 15px 30px;
-    font-size: 1.5em;
+    padding: 10px 30px;
+    font-size: 1em;
     border: none;
-    border-radius: 10px;
-    background-color: #f44336; /* Red background */
+    border-radius: 5px;
+    background-color: #222; /* Red background */
     color: white;
     cursor: pointer;
     margin-top: -130px;
 }
 #restart-button:hover {
-    background-color: #007bb5;
+    background-color: #666;
 }
 
 #footer{

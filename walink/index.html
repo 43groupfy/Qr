@@ -5,153 +5,163 @@
     <title>Generator Link WhatsApp</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Euclid Circular A', sans-serif;
-            background-color: #24a1a5;
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            color: #0e0142;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<style>
+body {
+  font-family: "Euclid Circular A", sans-serif;
+  background-color: #24a1a5;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #0e0142;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-        .inputContainer {
-            position: fixed;
-            top: 20vh;
-            right: 0;
-            left: 0;
-            text-align: center;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            padding: 10px 20px 40px;
-            margin: auto;
-            box-sizing: border-box;
-        }
+.container {
+  margin-top: 50%;
+}
 
-        @media (max-width: 768px) {
-            .inputContainer {
-                width: 95%;
-            }
-        }
-        @media (min-width: 768px) {
-            .inputContainer {
-                width: 95%;
-                max-width: 400px;
-            }
-        }
+.inputContainer {
+  text-align: center;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  padding: 10px 20px 40px;
+  margin: auto;
+  box-sizing: border-box;
+}
 
-        @media (min-width: 1024px) {
-            .inputContainer {
-                width: 400px;
-            }
-        }
+@media (max-width: 768px) {
+  .inputContainer {
+    width: 95%;
+  }
+}
+@media (min-width: 768px) {
+  .inputContainer {
+    width: 95%;
+    max-width: 400px;
+  }
+}
 
-        h1 {
-            color: #fff;
-        }
+@media (min-width: 1024px) {
+  .inputContainer {
+    width: 400px;
+  }
+}
 
-        p {
-            color: #666;
-            margin-bottom: 15px;
-            text-align: center;
-        }
+hr {
+  border: none;
+  border-top: 2px solid #0e0142;
+}
 
-        #inputNumber {
-            font-family: 'Euclid Circular A', sans-serif;
-            text-align: center;
-            padding: 10px;
-            font-size: 16px;
-            border: 2px solid #36b3b8;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            height: 42px; /* Sama dengan tinggi tombol */
-            box-sizing: border-box;
-        }
+p {
+  color: #666;
+  margin-bottom: 15px;
+  text-align: center;
+}
 
-        #generateButton {
-            background-color: #36b3b8;
-            color: #fff;
-            border: none;
-            padding: 10px 17px;
-            border-radius: 5px;
-            border: 2px solid #36b3b8;
-            cursor: pointer;
-            font-size: 16px;
-            height: 42px; /* Sama dengan tinggi input */
-            box-sizing: border-box;
-        }
+#inputNumber {
+  font-family: "Euclid Circular A", sans-serif;
+  text-align: center;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #36b3b8;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  height: 42px; /* Sama dengan tinggi tombol */
+  box-sizing: border-box;
+}
 
-        #generateButton:hover {
-            background-color: #0e797d;
-            border: 2px solid #0e797d;
-        }
+#generateButton {
+  background-color: #36b3b8;
+  color: #fff;
+  border: none;
+  padding: 10px 17px;
+  border-radius: 5px;
+  border: 2px solid #36b3b8;
+  cursor: pointer;
+  font-size: 16px;
+  height: 42px; /* Sama dengan tinggi input */
+  box-sizing: border-box;
+}
 
-        #linkTextArea, #copyButton, #openButton, #resetButton {
-            display: none;
-        }
+#generateButton:hover {
+  background-color: #0e797d;
+  border: 2px solid #0e797d;
+}
 
-        .resultcontainer {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-        }
+#linkTextArea,
+#copyButton,
+#openButton,
+#resetButton {
+  display: none;
+}
 
-        #resultText {
-            color: white;
-        }
+.resultContainer {
+  width: 100%;
+  margin: auto;
+  box-sizing: border-box;
+  padding: 10px 20px 40px;
+  max-width: 400px;
+}
 
-        #linkTextArea {
-            font-family: 'Euclid Circular A', sans-serif;
-            width: 100%;
-            padding-top: 8px;
-            max-height: 25px;
-            margin: 10px auto;
-            text-align: center;
-            border: 3px solid #fff;
-            border-radius: 5px;
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
+#resultText {
+  color: white;
+}
 
-        .buttonContainer {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            gap: 5px;
-        }
+#linkTextArea {
+  font-family: "Euclid Circular A", sans-serif;
+  width: 100%;
+  text-align: center;
+  padding-top: 10px;
+  font-size: 16px;
+  height: 45px;
+  border: 2px solid #36b3b8;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
 
-        #copyButton, #openButton, #resetButton {
-            text-decoration: none;
-            background-color: black;
-            color: #fff;
-            border: none;
-            padding: 7px 30px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
 
-        #copyButton:hover, #openButton:hover, #resetButton:hover {
-            background-color: #024446;
-        }
+#copyButton,
+#openButton,
+#resetButton {
+  text-decoration: none;
+  background-color: black;
+  color: #fff;
+  border: none;
+  padding: 7px 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
 
-        .resultContainer {
-            display: none;
-        }
+#copyButton:hover,
+#openButton:hover,
+#resetButton:hover {
+  background-color: #024446;
+}
 
-        .inline {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 5px;
-        }
-    </style>
+.resultContainer {
+  display: none;
+}
+
+.inline {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 5px;
+}
+
+</style>
 </head>
 <body>
     <div class="container">
@@ -175,59 +185,60 @@
         </div>
     </div>
     
-    <script>
-        function generateWhatsAppLink() {
-            var inputContainer = document.getElementById("inputContainer");
-            var resultContainer = document.getElementById("resultContainer");
-            var inputNumber = document.getElementById("inputNumber");
-            var linkTextArea = document.getElementById("linkTextArea");
-            var copyButton = document.getElementById("copyButton");
-            var openButton = document.getElementById("openButton");
+<script>
+  function generateWhatsAppLink() {
+    var inputContainer = document.getElementById("inputContainer");
+    var resultContainer = document.getElementById("resultContainer");
+    var inputNumber = document.getElementById("inputNumber");
+    var linkTextArea = document.getElementById("linkTextArea");
+    var copyButton = document.getElementById("copyButton");
+    var openButton = document.getElementById("openButton");
 
-            let inputNumberValue = inputNumber.value.trim().replace(/\D/g, '');
+    let inputNumberValue = inputNumber.value.trim().replace(/\D/g, "");
 
-            if (inputNumberValue.length >= 2 && inputNumberValue.startsWith('08')) {
-                inputNumberValue = '628' + inputNumberValue.slice(2);
-            }
+    if (inputNumberValue.length >= 2 && inputNumberValue.startsWith("08")) {
+      inputNumberValue = "628" + inputNumberValue.slice(2);
+    }
 
-            if (inputNumberValue.length > 0) {
-                const whatsappURL = `https://wa.me/${inputNumberValue}`;
-                linkTextArea.value = whatsappURL;
-                resultContainer.style.display = 'block';
-                linkTextArea.style.display = 'block';
-                copyButton.style.display = 'inline-block';
-                openButton.style.display = 'inline-block';
-                resetButton.style.display = 'inline-block';
-                inputContainer.style.display = 'none';
-                openButton.href = whatsappURL;
-            } else {
-                resultContainer.style.display = 'none';
-                inputContainer.style.display = 'block';
-            }
-        }
+    if (inputNumberValue.length > 0) {
+      const whatsappURL = `https://wa.me/${inputNumberValue}`;
+      linkTextArea.value = whatsappURL;
+      resultContainer.style.display = "block";
+      linkTextArea.style.display = "block";
+      copyButton.style.display = "inline-block";
+      openButton.style.display = "inline-block";
+      resetButton.style.display = "inline-block";
+      inputContainer.style.display = "none";
+      openButton.href = whatsappURL;
+    } else {
+      resultContainer.style.display = "none";
+      inputContainer.style.display = "block";
+    }
+  }
 
-        function copyToClipboard() {
-            const linkTextArea = document.getElementById("linkTextArea");
-            linkTextArea.select();
-            document.execCommand('copy');
-            alert('Link telah disalin ke clipboard.');
-        }
+  function copyToClipboard() {
+    const linkTextArea = document.getElementById("linkTextArea");
+    linkTextArea.select();
+    document.execCommand("copy");
+    alert("Link telah disalin ke clipboard.");
+  }
 
-        function resetForm() {
-            var inputContainer = document.getElementById("inputContainer");
-            var resultContainer = document.getElementById("resultContainer");
-            var inputNumber = document.getElementById("inputNumber");
-            var linkTextArea = document.getElementById("linkTextArea");
-            var copyButton = document.getElementById("copyButton");
-            var openButton = document.getElementById("openButton");
+  function resetForm() {
+    var inputContainer = document.getElementById("inputContainer");
+    var resultContainer = document.getElementById("resultContainer");
+    var inputNumber = document.getElementById("inputNumber");
+    var linkTextArea = document.getElementById("linkTextArea");
+    var copyButton = document.getElementById("copyButton");
+    var openButton = document.getElementById("openButton");
 
-            inputNumber.value = '';
-            linkTextArea.value = '';
-            copyButton.style.display = 'none';
-            openButton.style.display = 'none';
-            resultContainer.style.display = 'none';
-            inputContainer.style.display = 'block';
-        }
-    </script>
+    inputNumber.value = "";
+    linkTextArea.value = "";
+    copyButton.style.display = "none";
+    openButton.style.display = "none";
+    resultContainer.style.display = "none";
+    inputContainer.style.display = "block";
+  }
+</script>
+
 </body>
 </html>

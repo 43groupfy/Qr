@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
+    <title>Kalkulator BMI</title>
+    <style>
+        body {
+            font-family: 'Euclid Circular A', sans-serif;
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+        #container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .side-container{
+            display: flex; 
+            margin-top: 40px;
+        }
+        .left-side{
+            flex: 1;
+            margin: auto;
+        }
+        .right-side{
+            flex: 1;
+        }
+        .right-side > label{
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .right-side > input{
+            border: solid 1.5px #333;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        /* Gaya CSS untuk tombol gender */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding-bottom: 15px;
+        }
+
+        .button-group button {
+            background-color: #ddd;
+            padding: 8px 16px;
+            flex: 1;
+            width: 50%;
+            margin-right: 5px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .button-group button:last-child {
+            margin-right: 0;
+        }  
+
+        .button-group button.active {
+            background-color: #007BFF; /* Warna latar tombol yang aktif */
+            color: #fff; /* Warna teks tombol yang aktif */
+        }
+
+
+        /* Gaya CSS untuk gambar gender */
+        #gender-image {
+            width: 144px; /* Sesuaikan dengan lebar gambar yang diinginkan */
+            height: 250px; /* Sesuaikan dengan tinggi gambar yang diinginkan */
+            margin-top: 0px;
+            padding-right: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h1 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: 85%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        .btn {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 12px 16px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 30px;
+            font-size: 16px;
+        }
+        .peringatan {
+            color: red;
+        }
+        #hasil-container {
+            display: none;
+        }
+        #kembali-button {
+            margin-top: 20px;
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        table {
+            min-width: 32%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            position: relative;
+        }
+        th{
+            text-align: center;
+        }
+        /* Menambahkan garis pemisah vertikal */
+        th::after,
+        td::after {
+            content: ":";
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            font-weight: normal; /* Mengatur tebal huruf sesuai kebutuhan */
+        }
+
+        /* Menghilangkan garis pemisah pada sel terakhir */
+        th:last-child::after,
+        td:last-child::after {
+            content: none;
+        }
+
+        /* Halaman Hasil */
+        #hasil {
+            margin: 20px 0px;
+            text-align: center;
+            background-color:#F0F0F0;
+            padding: 20px 10px;
+            font-weight: bold;
+        }
+
+        #bmi {
+            color: #3C486B;
+            font-size: 40px;
+        }
+
+        #status {
+            font-size: 22px;
+        }
+    
+        /* Saran */
+        .saran{
+            text-align: left;
+            padding: 0 20px 0 5px;
+            font-size: 0.8em;
+            background-color: aquamarine;
+            padding: 15px 20px 20px 30px;
+            border-radius: 10px;
+        }
+        .saran::before{
+            content: "Rekomendasi";
+            font-size: 1em;
+            font-weight: bold;
+            margin-left: -15px;
+            margin-top: 10px;
+        }
+        #range-berat {
+            color: ; /* Gaya CSS untuk rentang berat ideal */
+        }
+        #saran-berat {
+            margin: 8px 0 5px;
+            color: ; /* Gaya CSS untuk pesan saran berat */
+        }
+        hr{
+            border: solid 1.5px #3C486B;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="input-container">
+            <h1>Kalkulator BMI</h1>
+            <hr>
+        <div class="side-container">
+            <div class="left-side">
+                <img id="gender-image" src="img/male.jpg" alt="Gender Image" style="margin-bottom: 20px;">
+            </div>
+            <div class="right-side">
+                <div id="gender" class="button-group">
+                    <button type="button" id="priaButton" onclick="selectGender('pria')">Pria</button>
+                    <button type="button" id="wanitaButton" onclick="selectGender('wanita')">Wanita</button>
+                </div>
+                <label for="berat">Berat (kg)</label>
+                <input type="number" id="berat" placeholder="Masukkan berat Anda" required>
+                <label for="tinggi">Tinggi (cm)</label>
+                <input type="number" id="tinggi" placeholder="Masukkan tinggi Anda" required>
+                <label for="usia">Usia (tahun)</label>
+                <input type="number" id="usia" placeholder="Masukkan usia Anda" required>
+            </div>
+        </div>
+            <button onclick="hitungBMI()" class="btn">Hitung BMI</button>
+        </div>
+        <div id="hasil-container">
+            <h1>BMI Score</h1>
+            <div id="hasil">
+                <span id="bmi"></span><br>
+                <span id="status"></span>
+            </div>
+        
+            <table>
+                <tr>
+                    <td>Tinggi</td>
+                    <td id="tinggi-data"></td>
+                </tr>
+                <tr>
+                    <td>Berat</td>
+                    <td id="berat-data"></td>
+                </tr>
+                <tr>
+                    <td>Gender</td>
+                    <td id="gender-data"></td>
+                </tr>
+                <tr>
+                    <td>Usia</td>
+                    <td id="usia-data"></td>
+                </tr>
+            </table>
+            <ul class="saran">
+                <li id="saran-berat"></li>
+                <li id="range-berat"></li>
+            </ul>
+            <button id="kembali-button" onclick="kembaliKeInput()">Kembali ke Input</button>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi untuk memilih gender
+        function selectGender(gender) {
+            var priaButton = document.getElementById("priaButton");
+            var wanitaButton = document.getElementById("wanitaButton");
+            var genderImage = document.getElementById("gender-image");
+
+            // Nonaktifkan semua tombol
+            priaButton.classList.remove("active");
+            wanitaButton.classList.remove("active");
+
+            // Aktifkan tombol yang dipilih
+            if (gender === "pria") {
+                priaButton.classList.add("active");
+                genderImage.src = "img/male.jpg"; // Ganti dengan gambar pria
+            } else if (gender === "wanita") {
+                wanitaButton.classList.add("active");
+                genderImage.src = "img/female.jpg"; // Ganti dengan gambar wanita
+            }
+        }
+
+        document.getElementById("priaButton").classList.add("active");
+
+
+        function hitungBMI() {
+            var berat = parseFloat(document.getElementById("berat").value);
+            var tinggi = parseFloat(document.getElementById("tinggi").value) / 100; // Ubah tinggi ke meter
+            var bmi = berat / (tinggi * tinggi);
+
+            var hasil = "";
+
+            var statusElement = document.getElementById("status");
+
+            if (isNaN(bmi)) {
+                hasil = "Masukkan berat dan tinggi yang valid.";
+                statusElement.style.color = "white"; // Warna default
+            } else {
+                var bmiText = "BMI Anda: " + bmi.toFixed(2);
+                var status = "";
+
+                if (bmi < 18.5) {
+                    status = "Kurus";
+                    statusElement.style.color = "#0079FF"; // Warna untuk status Kurus
+                } else if (bmi >= 18.5 && bmi < 24.9) {
+                    status = "Normal";
+                    statusElement.style.color = "#00DFA2"; // Warna untuk status Normal
+                } else if (bmi >= 24.9 && bmi < 29.9) {
+                    status = "Gemuk";
+                    statusElement.style.color = "#F6FA70"; // Warna untuk status Gemuk
+                } else {
+                    status = "Obesitas";
+                    statusElement.style.color = "#FF0060"; // Warna untuk status Obesitas
+                }
+
+                // Menambahkan saran tentang berat badan ideal
+                var beratIdealMin = (18.5 * tinggi * tinggi).toFixed(2);
+                var beratIdealMax = (24.9 * tinggi * tinggi).toFixed(2);
+
+                var saranBerat = document.getElementById("saran-berat");
+
+                if (berat < beratIdealMin) {
+                    var kurangBerat = (beratIdealMin - berat).toFixed(2);
+                    saranBerat.innerHTML = "Kamu perlu menaikan berat badan sekitar " + kurangBerat + " kg untuk mencapai berat badan ideal.";
+                } else if (berat > beratIdealMax) {
+                    var tambahBerat = (berat - beratIdealMax).toFixed(2);
+                    saranBerat.innerHTML = "Kamu perlu menurunkan berat badan sekitar " + tambahBerat + " kg untuk mencapai berat badan ideal.";
+                } else {
+                    saranBerat.innerHTML = "Berat badanmu sudah berada dalam rentang berat badan ideal.";
+                }
+
+                // Mendapatkan data gender dan usia
+                var gender = "";
+                var usia = 0;
+
+                var priaButton = document.getElementById("priaButton");
+                var wanitaButton = document.getElementById("wanitaButton");
+
+                if (priaButton.classList.contains("active")) {
+                    gender = "Pria";
+                } else if (wanitaButton.classList.contains("active")) {
+                    gender = "wanita";
+                }
+
+                usia = parseFloat(document.getElementById("usia").value);
+
+                // Menampilkan hasil, tombol kembali, dan data pengguna
+                document.getElementById("bmi").innerHTML = "" + bmi.toFixed(2);
+                document.getElementById("status").innerHTML = "" + status;
+                document.getElementById("input-container").style.display = "none";
+                document.getElementById("hasil-container").style.display = "block";
+
+                // Menambahkan penjelasan range berat badan ideal
+                var rangeBeratIdeal = "Berat badan idealmu adalah " + beratIdealMin + " kg s/d " + beratIdealMax + " kg.";
+                document.getElementById("range-berat").innerHTML = rangeBeratIdeal;
+
+                // Menambahkan data pengguna ke tabel
+                document.getElementById("tinggi-data").textContent = (parseFloat(document.getElementById("tinggi").value)).toFixed(0) + " cm";
+                document.getElementById("berat-data").textContent = (parseFloat(document.getElementById("berat").value)).toFixed(0) + " kg";
+                document.getElementById("gender-data").textContent = gender;
+                document.getElementById("usia-data").textContent = usia + " tahun";
+            }
+        }
+
+        function kembaliKeInput() {
+            // Mengembalikan tampilan ke halaman input
+            document.getElementById("input-container").style.display = "block";
+            document.getElementById("hasil-container").style.display = "none";
+        }
+    </script>
+</body>
+</html>

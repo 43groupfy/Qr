@@ -1,0 +1,107 @@
+wid {
+    font-family: "Euclid Circular A", sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    border-bottom: 3px solid #333;
+    line-height: 1.2em;
+    padding-bottom: 10px;
+}
+
+#form-container, #result-container{
+  width: 400px;
+  max-width: 100%;
+  margin: 10px auto;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="number"],
+select {
+    font-family: "Euclid Circular A", sans-serif;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input{
+    font-size: 1em
+}
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bde;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.close{
+    background: #333;
+}
+button:hover {
+    background-color: #222;
+}
+
+#result-container{
+    text-align: center;
+}
+
+.hasil{
+    background: #eee;
+    padding: 10px;
+    margin: 10px auto 30px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 10px;
+}
+
+#result {
+    margin: -5px auto 15px;
+    font-size: 54px;
+    color: #333;
+    font-weight: bold;
+}
+
+#result::after{
+    content: " kalori";
+    font-size: 18px;
+}
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 10px 20px 10px 15px; /* Sesuaikan padding untuk ikon */
+    text-align: left;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-image: url("https://assets.codepen.io/103108/arrow.svg");
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-position: right 9px center;
+    background-size: 12px;
+}
+

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Kebutuhan Kalori Harian</title>
+    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
+ <link href="styles.css" rel="stylesheet">
+
+    <script>
+        function calculateBMR(gender, weight, height, age) {
+            if (gender === "pria") {
+                return 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+            } else if (gender === "wanita") {
+                return 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+            } else {
+                throw new Error("Gender harus 'pria' atau 'wanita'");
+            }
+        }
+
+        function calculateTDEE(bmr, activityLevel) {
+            const activityMultipliers = {
+                "tidak aktif": 1.2,
+                "ringan": 1.375,
+                "sedang": 1.55,
+                "berat": 1.725,
+                "sangat berat": 1.9
+            };
+            return bmr * activityMultipliers[activityLevel];
+        }
+
+        function calculateCalories() {
+            const gender = document.getElementById("gender").value;
+            const weight = parseFloat(document.getElementById("weight").value);
+            const height = parseFloat(document.getElementById("height").value);
+            const age = parseInt(document.getElementById("age").value, 10);
+            const activityLevel = document.getElementById("activityLevel").value;
+
+            const bmr = calculateBMR(gender, weight, height, age);
+            const tdee = calculateTDEE(bmr, activityLevel);
+
+            document.getElementById("result").innerText = `${tdee.toFixed(2)}`;
+            document.getElementById("form-container").style.display = "none";
+            document.getElementById("result-container").style.display = "block";
+        }
+
+        function closeResult() {
+            document.getElementById("result-container").style.display = "none";
+            document.getElementById("form-container").style.display = "block";
+        }
+    </script>
+</head>
+<body>
+    <div id="form-container">
+        <h1>Kalkulator Kebutuhan Kalori Harian</h1>
+        <form onsubmit="event.preventDefault(); calculateCalories();">
+            <label for="gender">Gender:</label>
+            <select id="gender" required>
+                <option value="pria">Pria</option>
+                <option value="wanita">Wanita</option>
+            </select>
+            <br>
+            <label for="weight">Berat (kg):</label>
+            <input type="number" id="weight" value="62" required>
+            <br>
+            <label for="height">Tinggi (cm):</label>
+            <input type="number" id="height" value="167" required>
+            <br>
+            <label for="age">Usia (tahun):</label>
+            <input type="number" id="age" value="23" required>
+            <br>
+            <label for="activityLevel">Tingkat Aktivitas:</label>
+            <select id="activityLevel" required>
+                <option value="tidak aktif">Tidak Aktif</option>
+                <option value="ringan">Aktivitas Ringan</option>
+                <option value="sedang">Aktivitas Sedang</option>
+                <option value="berat">Aktivitas Berat</option>
+                <option value="sangat berat">Aktivitas Sangat Berat</option>
+            </select>
+            <br>
+            <button type="submit">Hitung</button>
+        </form>
+    </div>
+    <div id="result-container" style="display: none;">
+        <h1>Your Calories Needs</h1>
+
+            <div class="hasil">
+            <p>Jumlah kebutuhan kalori harianmu</p>
+            <p id="result"></p>
+        </div>    
+        <button class="close" onclick="closeResult()">Close</button>
+    </div>
+</body>
+</html>

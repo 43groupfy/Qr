@@ -1,0 +1,312 @@
+@import url('https://fonts.cdnfonts.com/css/euclid-circular-a');
+
+/* Styling the Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  padding: 5px 10px;
+}
+.navbar a {
+  color: white;
+  text-decoration: none;
+  padding: 8px 5px;
+}
+
+img {
+  height: 20px;
+}
+
+.navbar-brand {
+  font-size: 20px;
+  font-weight: bold;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin-right: 5px;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.dropdown:hover .dropbtn {
+  background-color: #575757;
+  border-radius: 4px;
+}
+
+@import url("https://fonts.cdnfonts.com/css/euclid-circular-a");
+
+/* Styling the Container */
+body {
+  font-family: "Euclid Circular A", sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}
+.container {
+  background: #195fd7;
+  height: 45vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 40px;
+  padding-top: 20px;
+}
+
+.headline {
+  text-align: center;
+  margin-bottom: 20px;
+  line-height: 45px;
+}
+.title {
+  font-size: 44px;
+  color: white;
+  font-weight: bold;
+}
+.subtitle {
+  font-size: 20px;
+  color: white;
+}
+form {
+  width: 85%;
+  max-width: 800px;
+  display: flex;
+  gap: 5px;
+}
+input,
+button {
+  border-radius: 5px;
+  border: none;
+  font-size: 15px;
+  font-family: "Euclid Circular A", sans-serif;
+}
+input {
+  flex: 2;
+  padding: 10px 20px;
+}
+button {
+  padding: 10px 20px;
+  cursor: pointer;
+  background: #00be63;
+  color: #fff;
+}
+
+button:hover {
+  background: #099c55;
+  color: #fff;
+}
+
+/* Styling the Responsive design */
+@media (max-width: 768px) {
+  .container {
+    height: 35vh;
+    padding-bottom: 45px;
+  }
+  input,
+  button {
+    font-size: 14px;
+    padding: 10px 10px;
+  }
+  button {
+    padding: 10px 15px;
+  }
+  .headline {
+    line-height: 35px;
+  }
+  .title {
+    font-size: 30px;
+  }
+  .subtitle {
+    font-size: 15px;
+  }
+  #status {
+    margin-top: -65px;
+  }
+}
+@media (min-width: 768px) {
+  #status {
+    margin-top: -65px;
+  }
+}
+
+/* Styling the scrollbar */
+::-webkit-scrollbar {
+  width: 5px; /* Width of the scrollbar */
+  height: 12px; /* Height of the scrollbar for horizontal overflow */
+  border-radius: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color of the track */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scrollbar thumb */
+  border-radius: 6px; /* Rounded corners for the scrollbar thumb */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color of the scrollbar thumb on hover */
+}
+
+/* Optional: Style the corner */
+::-webkit-scrollbar-corner {
+  background: #f1f1f1; /* Color of the scrollbar corner */
+}
+
+/* Styling the FAQ */
+.faq {
+  padding: 10px 20px;
+}
+
+.faq h2 {
+  text-align: center;
+}
+
+.accordion {
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  transition: 0.4s;
+  background-color: #195fd7;
+  border: none;
+  margin: 5px 0;
+}
+
+.active,
+.accordion:hover {
+  background-color: #222;
+}
+
+.panel {
+  padding: 0 10px;
+  background-color: white;
+  line-height: 1.5em;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.panel.active {
+  margin: 10px 0px 20px; /* Adjust this value to set the desired space */
+}
+
+.panel ul {
+  margin-top: 0;
+}
+
+.heading-with-lines {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.heading-with-lines::before,
+.heading-with-lines::after {
+  content: "";
+  flex: 1;
+  border-bottom: 4px solid #000;
+  margin: 0 0px;
+}
+
+.heading-with-lines::before {
+  margin-right: 20px;
+}
+
+.heading-with-lines::after {
+  margin-left: 20px;
+}
+
+#status {
+  display: flex;
+  justify-content: center;
+  color: #fff;
+  padding-bottom: 45px;
+}
+
+#status i {
+  scale: 4;
+}
+
+.about {
+  padding: 30px 30px 50px;
+  box-sizing: border-box;
+  text-align: center;
+  line-height: 1.5em;
+  font-size: 14px;
+  background: #fff;
+}
+
+.about h2 {
+  line-height: 1.7em;
+}
+.content {
+  padding: 30px 30px 50px;
+  box-sizing: border-box;
+  text-align: center;
+  line-height: 1.5em;
+  background: #195fd7;
+  color: #fff;
+}
+
+.disclaimer {
+  padding: 10px 20px;
+  line-height: 1.5em;
+  font-size: 14px;
+  background: #999;
+  margin-top: 20px;
+}
+
+.disclaimer b {
+  line-height: 1.8em;
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 40px;
+  aspect-ratio: 2;
+  --_g: no-repeat radial-gradient(circle closest-side, #fff 90%, #0000);
+  background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
+  background-size: calc(100% / 3) 50%;
+  animation: l3 1s infinite linear;
+}
+@keyframes l3 {
+  20% {
+    background-position: 0% 0%, 50% 50%, 100% 50%;
+  }
+  40% {
+    background-position: 0% 100%, 50% 0%, 100% 50%;
+  }
+  60% {
+    background-position: 0% 50%, 50% 100%, 100% 0%;
+  }
+  80% {
+    background-position: 0% 50%, 50% 50%, 100% 100%;
+  }
+}

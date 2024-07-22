@@ -102,7 +102,7 @@ button {
 }
 input {
   flex: 2;
-  padding: 10px 20px;
+  padding: 13px 20px;
 }
 button {
   padding: 10px 20px;
@@ -125,7 +125,7 @@ button:hover {
   input,
   button {
     font-size: 14px;
-    padding: 10px 10px;
+    padding: 13px 10px;
   }
   button {
     padding: 10px 15px;

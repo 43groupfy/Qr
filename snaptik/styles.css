@@ -263,9 +263,10 @@ button:hover {
   background: #fff;
 }
 
-.about h2, .content h2{
+.about h2{
   line-height: 1.7em;
 }
+
 .content {
   padding: 30px 30px 50px;
   box-sizing: border-box;
@@ -273,6 +274,10 @@ button:hover {
   line-height: 1.5em;
   background: #195fd7;
   color: #fff;
+}
+
+.content h2{
+  line-height: 1.6em;
 }
 
 .disclaimer {

@@ -263,7 +263,7 @@ button:hover {
   background: #fff;
 }
 
-.about h2 {
+.about h2, .content h2{
   line-height: 1.7em;
 }
 .content {

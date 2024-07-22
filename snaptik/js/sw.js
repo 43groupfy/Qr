@@ -41,18 +41,35 @@ self.addEventListener('fetch', (event) => {
 });
 
 // Add tombol install 
-let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-        deferredPrompt = e;
-    });
 
-    const installApp = document.getElementById('installApp');
-    installApp.addEventListener('click', async () => {
-        if (deferredPrompt !== null) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                deferredPrompt = null;
-            }
-        }
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Mencegah prompt otomatis
+  e.preventDefault();
+  // Simpan event untuk nanti
+  deferredPrompt = e;
+  // Tampilkan tombol install
+  const installButton = document.getElementById('install-button');
+  installButton.style.display = 'block';
+
+  installButton.addEventListener('click', () => {
+    // Sembunyikan tombol install setelah diklik
+    installButton.style.display = 'none';
+    // Tampilkan prompt install
+    deferredPrompt.prompt();
+    // Tunggu pilihan pengguna
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+      deferredPrompt = null;
     });
+  });
+});
+
+window.addEventListener('appinstalled', (evt) => {
+  console.log('PWA telah diinstal');
+});

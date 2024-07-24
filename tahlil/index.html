@@ -1,11 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
+    <!-- Metadata dasar -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+    <!-- Stylesheets -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+    />
+    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet" />
+
+    <!-- Title -->
     <title>Kalkulator Waktu Peringatan Kematian</title>
+
+    <!-- Meta Deskripsi -->
+    <meta
+        name="description"
+        content="Gunakan Kalkulator Waktu Peringatan Kematian untuk menghitung tanggal peringatan penting setelah kematian seseorang. Cari tahu peringatan 7 hari, 40 hari, 100 hari, dan 1000 hari dengan mudah dan cepat."
+    />
+
+    <!-- Meta Kata Kunci -->
+    <meta name="keywords" content="kalkulator peringatan kematian, peringatan kematian, perhitungan 7 hari, perhitungan 40 hari, perhitungan 100 hari, perhitungan 1000 hari, peringatan kematian islam" />
+
+    <!-- Author -->
+    <meta name="author" content="Creative Commons" />
+
+    <!-- Twitter Card Metadata -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kalkulator Waktu Peringatan Kematian" />
+    <meta name="twitter:description" content="Hitung tanggal peringatan kematian seperti 7 hari, 40 hari, 100 hari, dan 1000 hari dengan Kalkulator Waktu Peringatan Kematian kami." />
+    <meta name="twitter:image" content="URL_GAMBAR_ANDA" />
+    <!-- Ganti dengan URL gambar yang mewakili halaman ini -->
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="index.html" />
+    <!-- Ganti dengan URL halaman ini -->
+
+    <!-- Additional SEO Tags -->
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Alternative lang -->
+    <link rel="alternate" href="index.html" hreflang="id-ID" />
+    <!-- Alternatif bahasa untuk halaman ini -->
 <style>
 body {
     font-family: 'Euclid Circular A', sans-serif;
@@ -17,11 +63,11 @@ body {
 }
 
 .container {
-	padding: 10px;
-	margin: 20px auto;
-	text-align: center;
-	display: grid;
-	border-radius: 10px;
+    padding: 10px;
+    margin: 20px auto;
+    text-align: center;
+    display: grid;
+    border-radius: 10px;
     box-sizing: border-box;
 }
 
@@ -81,35 +127,32 @@ input[type="date"] {
     text-transform: uppercase;
 }
 input[type="date"] {
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            position: relative;
-            padding: 10px 40px 10px 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 200px;
-        }
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: relative;
+    padding: 10px 40px 10px 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
 
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            opacity: 0;
-            cursor: pointer;
-        }
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    cursor: pointer;
+}
 
-        input[type="date"]::after {
-            content: '\f073'; /* Unicode for calendar icon in Font Awesome */
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            color: #333; /* Icon color */
-        }
-
-
+input[type="date"]::after {
+    content: "\f073"; /* Unicode for calendar icon in Font Awesome */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #252B48; /* Icon color */
+}
 	
 button {
     background-color: #C70039;
@@ -181,90 +224,92 @@ table tr:first-child {
 </style>
 </head>
 <body>
-	<div class="container">
-        <h1>Kalkulator Hari Peringatan</h1>
-        <div class="input">
-            <p>Masukan Tanggal Kematian</p>
-            <form id="inputForm">
-                <input type="date" id="tanggalKematian" placeholder="Pilih tanggal" required>
-                <button type="button" onclick="hitungWaktuPeringatan()">Hitung</button>
-            </form>
-        </div>
-        <div id="hasil">
-            <h2>Waktu Peringatan Kematian</h2>
-		    <table id="hasilTabel" style="display:none"></table>
-	    </div>
+<div class="container">
+    <h1>Kalkulator Hari Peringatan</h1>
+    <div class="input">
+        <p>Masukan Tanggal Kematian</p>
+        <form id="inputForm">
+            <input type="date" id="tanggalKematian" placeholder="Pilih tanggal" required />
+            <button type="button" onclick="hitungWaktuPeringatan()">Hitung</button>
+        </form>
     </div>
-	<script>
-		function formatTanggal(tanggal) {
-			// Ubah format tanggal menjadi DD/MM/YYYY
-			let day = tanggal.getDate();
-			let month = tanggal.getMonth() + 1; // getMonth() mengembalikan bulan mulai dari 0
-			let year = tanggal.getFullYear();
-			return (day < 10 ? '0' : '') + day + '/' + (month < 10 ? '0' : '') + month + '/' + year;
-		}
+    <div id="hasil">
+        <h2>Waktu Peringatan Kematian</h2>
+        <table id="hasilTabel" style="display: none;"></table>
+    </div>
+</div>
 
-		function hitungWaktuPeringatan() {
-			const tanggalKematianInput = document.getElementById('tanggalKematian').value;
-			if (!tanggalKematianInput) {
-				alert('Silakan pilih tanggal terlebih dahulu.');
-				return;
-			}
+<script>
+function formatTanggal(tanggal) {
+    // Ubah format tanggal menjadi DD/MM/YYYY
+    let day = tanggal.getDate();
+    let month = tanggal.getMonth() + 1; // getMonth() mengembalikan bulan mulai dari 0
+    let year = tanggal.getFullYear();
+    return (day < 10 ? "0" : "") + day + "/" + (month < 10 ? "0" : "") + month + "/" + year;
+}
 
-			const tanggalKematian = new Date(tanggalKematianInput);
-			const tabelHasil = document.getElementById('hasilTabel');
-			tabelHasil.style.display = 'table'; // Tampilkan tabel saat tombol hitung ditekan
-			tabelHasil.innerHTML = '<tr><th>Peringatan</th><th>Hari</th><th>Tanggal</th></tr>';
+function hitungWaktuPeringatan() {
+    const tanggalKematianInput = document.getElementById("tanggalKematian").value;
+    if (!tanggalKematianInput) {
+        alert("Silakan pilih tanggal terlebih dahulu.");
+        return;
+    }
 
-			const peringatan = [7, 40, 100, 365, 730, 1000]; // dalam hari
-			const hasil = [];
+    const tanggalKematian = new Date(tanggalKematianInput);
+    const tabelHasil = document.getElementById("hasilTabel");
+    tabelHasil.style.display = "table"; // Tampilkan tabel saat tombol hitung ditekan
+    tabelHasil.innerHTML = "<tr><th>Peringatan</th><th>Hari</th><th>Tanggal</th></tr>";
 
-			const hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const peringatan = [7, 40, 100, 365, 730, 1000]; // dalam hari
+    const hasil = [];
 
-			for (let i = 0; i < peringatan.length; i++) {
-				let tanggalPeringatan;
-				let peringatanText;
-				if (peringatan[i] === 365) {
-					// Peringatan 1 tahun
-					tanggalPeringatan = new Date(tanggalKematian);
-					tanggalPeringatan.setFullYear(tanggalKematian.getFullYear() + 1);
-					peringatanText = '1 tahun';
-				} else if (peringatan[i] === 730) {
-					// Peringatan 2 tahun
-					tanggalPeringatan = new Date(tanggalKematian);
-					tanggalPeringatan.setFullYear(tanggalKematian.getFullYear() + 2);
-					peringatanText = '2 tahun';
-				} else {
-					tanggalPeringatan = new Date(tanggalKematian);
-					tanggalPeringatan.setDate(tanggalKematian.getDate() + peringatan[i]);
-					peringatanText = peringatan[i] + ' hari';
-				}
+    const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
-				// Ubah tanggal ke format "DD/MM/YYYY"
-				const formattedTanggal = formatTanggal(tanggalPeringatan);
+    for (let i = 0; i < peringatan.length; i++) {
+        let tanggalPeringatan;
+        let peringatanText;
+        if (peringatan[i] === 365) {
+            // Peringatan 1 tahun
+            tanggalPeringatan = new Date(tanggalKematian);
+            tanggalPeringatan.setFullYear(tanggalKematian.getFullYear() + 1);
+            peringatanText = "1 tahun";
+        } else if (peringatan[i] === 730) {
+            // Peringatan 2 tahun
+            tanggalPeringatan = new Date(tanggalKematian);
+            tanggalPeringatan.setFullYear(tanggalKematian.getFullYear() + 2);
+            peringatanText = "2 tahun";
+        } else {
+            tanggalPeringatan = new Date(tanggalKematian);
+            tanggalPeringatan.setDate(tanggalKematian.getDate() + peringatan[i]);
+            peringatanText = peringatan[i] + " hari";
+        }
 
-				hasil.push({
-					peringatan: peringatanText,
-					hari: hari[tanggalPeringatan.getDay()],
-					tanggal: formattedTanggal
-				});
-			}
+        // Ubah tanggal ke format "DD/MM/YYYY"
+        const formattedTanggal = formatTanggal(tanggalPeringatan);
 
-			// Menambahkan hasil ke dalam tabel
-			for (let i = 0; i < hasil.length; i++) {
-				const row = tabelHasil.insertRow();
-				const cell1 = row.insertCell(0);
-				const cell2 = row.insertCell(1);
-				const cell3 = row.insertCell(2);
-				cell1.innerHTML = hasil[i].peringatan;
-				cell2.innerHTML = hasil[i].hari;
-				cell3.innerHTML = hasil[i].tanggal;
-			}
+        hasil.push({
+            peringatan: peringatanText,
+            hari: hari[tanggalPeringatan.getDay()],
+            tanggal: formattedTanggal,
+        });
+    }
 
-        document.getElementById('hasil').style.display = 'block';
+    // Menambahkan hasil ke dalam tabel
+    for (let i = 0; i < hasil.length; i++) {
+        const row = tabelHasil.insertRow();
+        const cell1 = row.insertCell(0);
+        const cell2 = row.insertCell(1);
+        const cell3 = row.insertCell(2);
+        cell1.innerHTML = hasil[i].peringatan;
+        cell2.innerHTML = hasil[i].hari;
+        cell3.innerHTML = hasil[i].tanggal;
+    }
 
-		}
-	</script>
+    document.getElementById("hasil").style.display = "block";
+}
+
+</script>
+
 </body>
 
 </html>

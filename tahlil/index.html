@@ -79,7 +79,37 @@ input[type="date"] {
     text-align: center;
     text-transform: uppercase;
 }
+input[type="date"] {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            position: relative;
+            padding: 10px 40px 10px 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 200px;
+        }
 
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        input[type="date"]::after {
+            content: '\f073'; /* Unicode for calendar icon in Font Awesome */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #333; /* Icon color */
+        }
+
+
+	
 button {
     background-color: #C70039;
     color: #ddd;

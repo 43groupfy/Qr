@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="in">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Tools</title>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css" />
+    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
+</head>
+<style>
+a{
+    text-decoration: none
+}
+
+body{
+    padding: 0;
+    margin: 0;
+    
+}
+.supported-platforms {
+  background-color: #f8f9fa;
+  padding: 10px 0 50px;
+  box-sizing: border-box
+}
+
+.supported-platforms h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.container {
+  font-family: "Euclid Circular A", sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  font-size: 14px;
+}
+
+.platforms-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .platforms-grid {
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .platforms-grid {
+    grid-template-columns: repeat(8, 1fr);
+  }
+}
+
+.platform-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding: 45px 10px;
+  color: white;
+  border-radius: 8px;
+  transition: transform 0.3s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.platform-item i {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.platform-item img {
+  width: 80px;
+  margin-bottom: 10px;
+}
+
+.platform-item p {
+  margin: 0;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.platform-item:hover {
+  transform: translateY(-5px);
+}
+
+.red {
+  background-color: #ff0000;
+}
+
+.pink {
+  background-color: #e4405f;
+}
+
+.black {
+  background-color: #010101;
+}
+
+.green {
+  background-color: #00b489;
+}
+
+.dark-red {
+  background-color: #bd081c;
+}
+
+.orange {
+  background-color: #ff5700;
+}
+
+.light-blue {
+  background-color: #00a1d6;
+}
+
+.dark-purple {
+  background-color: #140c44;
+}
+
+.dark-blue {
+  background-color: #35465c;
+}
+
+.purple {
+  background-color: #9146ff;
+}
+
+.blue-tone {
+  background-color: #4c75a3;
+}    
+</style>
+<body>
+<section class="supported-platforms">
+  <div class="container">
+    <h2>Special Tools</h2>
+    <div class="platforms-grid">
+      <a href="https://tatang.vercel.app/qrcode/index.html"> 
+      <div class="platform-item black">
+        <i class="fa-solid fa-qrcode"></i>     
+        <p>QR Scan</p>
+      </div>
+      </a>
+      <a href="https://tatang.vercel.app/credit/index.html">
+      <div class="platform-item dark-red">
+        <i class="fa-solid fa-credit-card"></i>
+        <p>Interest Rates</p>
+      </div>
+      </a>
+      <a href="https://tatang.vercel.app/dzikir/index.html">
+      <div class="platform-item pink">
+        <i class="fa-solid fa-tally"></i>
+        <p>Dzikir Count</p>
+      </div>
+      </a>
+      <a href="https://tatang.vercel.app/tahlil/index.html">
+      <div class="platform-item orange">
+        <i class="fa-solid fa-calendar-clock"></i>
+        <p>Days Count</p>
+      </div>
+      </a>
+      <a href="https://tatang.vercel.app/walink/index.html"> 
+      <div class="platform-item green">
+        <i class="fab fa-whatsapp"></i>
+        <p>WA link</p>
+      </div>
+      </a>
+      <a href="https://tatang.vercel.app/kalorimu/index.html">
+      <div class="platform-item dark-purple">
+        <i class="fa-solid fa-dumbbell"></i>
+        <p>Calori Count</p>
+      </div>
+      </a>
+      <a href="https://tatang.vercel.app/bmi/index.html">
+      <div class="platform-item dark-blue">
+        <i class="fa-solid fa-notes-medical"></i>
+        <p>BMI Count</p>
+      </div>
+      </a>
+      <a href="https://tatang.vercel.app/snaptik/index.html">
+      <div class="platform-item pink">
+        <i class="fa-solid fa-message-arrow-down"></i>
+        <p>Media Saver</p>
+      </div>
+      </a>
+    </div>
+  </div>
+</section>    
+</body>
+</html>

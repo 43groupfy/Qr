@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kalkulator Hari + Pasaran</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Euclid Circular A', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.container {
+    width: 95%;
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h1 {
+    margin: 10px 15px 15px;
+    font-size: 1.49rem;
+    padding: 10px 10px 10px;
+    border-bottom: 3px solid #111;
+}
+
+input[type="date"] {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex: 3;
+    text-align: center;
+    text-transform: uppercase;
+    width: 60%;
+    margin: 10px 0 50px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: relative;
+    padding: 10px 40px 10px 10px;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    cursor: pointer;
+}
+
+input[type="date"]::after {
+    content: '\f073'; /* Unicode for calendar icon in Font Awesome */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #333; /* Icon color */
+}
+
+button {
+    background-color: #C70039;
+    color: #ddd;
+    border: none;
+    font-size: 0.9em;
+    font-weight: bold;
+    border-radius: 5px;
+    margin: 0px auto 0;
+    padding: 12.5px 20px;
+    cursor: pointer;
+    flex: 1;
+    width: 20%;
+    min-width: 100px;
+}
+
+button::before {
+    content: "\f002"; /* kode Unicode untuk ikon pencarian */
+    font-family: "Font Awesome 6 Free"; /* pastikan menggunakan font family yang benar */
+    margin-right: 5px;
+    margin-left: -5px;
+}
+
+button:hover {
+    background-color: rgb(24, 8, 8);
+}
+
+#result {
+    height: 70px;
+    background: #C70039;
+    color: #fff;
+    margin: -20px auto 20px;
+    padding: 25px 0;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 5px;
+    width: calc(80% + 10px);
+    min-width: calc(60% + 105px);
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kalkulator Pasaran Jawa</h1>
+        <input type="date" id="dateInput" />
+        <button onclick="calculatePasaran()">Hitung</button>
+        <div id="result">waiting...</div>
+    </div>
+
+    <script>
+        function calculatePasaran() {
+            const dateInput = document.getElementById('dateInput').value;
+            if (!dateInput) {
+                alert('Silakan pilih tanggal!');
+                return;
+            }
+
+            const date = new Date(dateInput);
+            const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const pasaranNames = ['Pahing', 'Pon', 'Wage', 'Kliwon', 'Legi'];
+
+            // Hitung jumlah hari sejak 1 Januari 2024 (tanggal referensi)
+            const startDate = new Date('2024-01-01');
+            const timeDifference = date - startDate;
+            const dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+            // Dapatkan indeks hari dan pasaran
+            const dayIndex = date.getDay();
+            const pasaranIndex = (dayDifference % 5 + 5) % 5;
+
+            // Tentukan hari dan pasaran
+            const hari = dayNames[dayIndex];
+            const pasaran = pasaranNames[pasaranIndex];
+
+            // Tampilkan hasil
+            const result = `${hari} ${pasaran}`;
+            const resultElement = document.getElementById('result');
+            resultElement.innerText = result;
+            resultElement.style.display = 'block'; // Tampilkan elemen hasil
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Pengundian Urutan</title>
+    <link href="https://fonts.cdnfonts.com/css/euclid-circular-a" rel="stylesheet">
+
+<style>
+* {
+  font-family: "Euclid Circular A", sans-serif;
+}
+body {
+  font-family: "Euclid Circular A", sans-serif;
+  font-size: 18px;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 10px 10px;
+  max-width: 500px;
+}
+
+ul {
+  margin-top: 0;
+}
+
+ul button {
+  width: 100px;
+}
+
+button {
+  background: #e4405f;
+  color: #fff;
+  width: 100%;
+  margin: 5px 0px;
+  height: 44px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 0 solid #0c1115;
+}
+
+input {
+  font-size: 14px;
+  width: 80%;
+  height: 42px;
+  margin: 5px 10px 0 0;
+  border-radius: 10px;
+  border: 1px solid #0c1115;
+  padding: 0px 20px;
+}
+
+#user-list {
+  list-style: none;
+  padding: 0;
+  margin-top: -5px;
+}
+
+#user-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: -10px;
+}
+
+#draw,
+#close-result {
+  background: black;
+  color: white;
+  font-size: 0.8em;
+  margin-top: 20px;
+}
+
+#add-user {
+  width: 100%;
+  border: none;
+  margin-top: 0px;
+  margin-bottom: -5px;
+  background: #00b489;
+}
+
+h1 {
+  font-size: 35px;
+  text-align: center;
+}
+
+#header {
+  margin-bottom: 25px;
+}
+
+#result-table {
+  width: calc(100% + 10px);
+  border-collapse: none;
+  margin: 0 -5px;
+}
+
+#result-table th,
+#result-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  height: 42px;
+  text-align: left;
+  border-radius: 10px;
+  font-size: 0.9em;
+}
+
+#result-table th,
+tr:nth-child(even) {
+  background-color: #f2f2f2; /* Warna untuk baris genap */
+}
+
+#result-table tr:nth-child(odd) {
+  background-color: #ffff;
+}
+
+#result-table th:first-child,
+#result-table td:first-child {
+  width: 30px; /* Lebar kolom pertama */
+  text-align: center;
+}
+
+#result-table th:nth-child(2),
+#result-table td:nth-child(2) {
+  width: calc(100% - 30px); /* Lebar kolom kedua */
+  padding-left: 20px;
+}
+
+/* Awalnya form ditampilkan dan hasil disembunyikan */
+#result {
+  display: none;
+}
+
+#result button {
+  margin-left: 0px;
+  width: calc(100% - 0px);
+  box-sizing: border-box;
+}
+
+.error {
+  color: #e4405f;
+  font-weight: normal;
+  margin: 0px 0 15px;
+  font-size: 14px;
+}
+
+#header h1 {
+  font-size: 35px;
+}
+#header p {
+  font-size: 15px;
+  margin-top: -20px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.ht {
+  font-size: 20px;
+  padding: 20px 0;
+  text-align: center;
+  background: #35465c;
+  color: #fff;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+</style>
+</head>
+<body>
+    <div class="container">
+        <div id="header">
+            <h1>Ledder Shuffle</h1>
+            <p>Aplikasi Pengundian Urutan</p>
+        </div>
+        <form id="user-form">
+            <div class="ht">Input Participants</div>
+            <ul id="user-list">
+                <li>
+                    <input type="text" name="user[]" placeholder="Nama User" value="" />
+                    <button type="button" class="remove-user">Hapus</button>
+                </li>
+            </ul>
+            <div id="error-message" class="error" style="display: none;">Semua input harus diisi!</div>
+            <button type="button" id="add-user">Tambah User</button>
+            <button type="button" id="draw">Mulai Acak</button>
+        </form>
+
+        <div id="result">
+            <div class="ht">Shuffle's Result</div>
+
+            <table id="result-table" cellspacing="5">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Anggota</th>
+                    </tr>
+                </thead>
+                <tbody id="result-list"></tbody>
+            </table>
+            <!-- Tombol Tutup -->
+            <button type="button" id="close-result">Tutup</button>
+        </div>
+    </div>
+</body>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const header = document.getElementById("header");
+  const userForm = document.getElementById("user-form");
+  const userList = document.getElementById("user-list");
+  const resultTable = document.getElementById("result-table");
+  const resultList = document.getElementById("result-list");
+  const addUserBtn = document.getElementById("add-user");
+  const drawBtn = document.getElementById("draw");
+  const resultDiv = document.getElementById("result");
+  const errorMessage = document.getElementById("error-message");
+  const closeResultBtn = document.getElementById("close-result");
+
+  addUserBtn.addEventListener("click", function () {
+    const newUser = document.createElement("li");
+    newUser.innerHTML = `<input type="text" name="user[]" placeholder="Nama User" required>
+                                    <button type="button" class="remove-user">Hapus</button>`;
+    userList.appendChild(newUser);
+  });
+
+  userList.addEventListener("click", function (e) {
+    if (e.target.classList.contains("remove-user")) {
+      e.target.parentElement.remove();
+    }
+  });
+
+  drawBtn.addEventListener("click", function () {
+    const users = userForm.querySelectorAll("input[name='user[]']");
+
+    // Check if all inputs are filled
+    const allFilled = Array.from(users).every((input) => input.value.trim() !== "");
+
+    if (!allFilled) {
+      errorMessage.style.display = "block";
+      return;
+    } else {
+      errorMessage.style.display = "none";
+    }
+
+    const shuffledUsers = Array.from(users)
+      .map((input) => input.value)
+      .sort(() => 0.5 - Math.random());
+
+    resultList.innerHTML = "";
+    shuffledUsers.forEach(function (user, index) {
+      const listItem = document.createElement("tr");
+      listItem.innerHTML = `<tr><td>${index + 1}</td><td>${user}</td></tr>`;
+      resultList.appendChild(listItem);
+    });
+
+    // Sembunyikan form dan tampilkan hasil
+    header.style.display = "block";
+    userForm.style.display = "none";
+    resultDiv.style.display = "block";
+    resultTable.style.display = "table";
+  });
+
+  // Event listener untuk tombol "Tutup"
+  closeResultBtn.addEventListener("click", function () {
+    // Sembunyikan hasil dan tampilkan kembali form
+    resultDiv.style.display = "none";
+    header.style.display = "block";
+    userForm.style.display = "block";
+  });
+});
+
+</script>
+</body>
+</html>

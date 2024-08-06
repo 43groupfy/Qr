@@ -543,7 +543,7 @@ hr {
 
   h1.title {
     font-size: 50px;
-    margin-top: -5px; }
+    margin: auto; }
 
   .container {
     width: 280px;

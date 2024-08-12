@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="in">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judul halaman</title>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css" />
+</head>
+<style>
+@import url("https://fonts.cdnfonts.com/css/euclid-circular-a");
+body {
+    font-family: 'Euclid Circular A', sans-serif;
+    background-color: #f4f4f9;
+    color: #000;
+    margin: 0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+a{
+   text-decoration: none;
+   color: inherit;
+}
+
+nav {
+    margin: 10px auto -10px;
+    background: #fff;
+    padding: 15px 20px 15px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 97%;
+    box-sizing: border-box;
+    transition: background-color 0.3s, color 0.3s;
+    display: flex; /* Tambahkan */
+    justify-content: center; /* Tambahkan */
+    align-items: center; /* Tambahkan */
+}
+
+nav .title{
+    text-align: center
+}
+
+.container{
+    margin: 20px auto;
+    background: #fff;
+    padding: 25px 20px 15px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 97%;
+    box-sizing: border-box;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.flex{
+    display: flex;
+    border: 1px solid #eee;
+    padding: 0 15px;
+    border-radius: 15px;
+    gap: 5px;
+    items-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 0 0 8px;
+    background: #fff;
+    align-items: center;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.icon i{
+    flex: 1;
+    text-align: center;
+    padding-top: 2px;
+    font-size: 30px;
+    padding: 12px 0px;
+    --fa-primary-color: gold; 
+    --fa-secondary-color: gold;
+}
+
+.title{
+    flex: 10;
+    font-size: 16px;
+    margin: 3px 0 0px;
+    font-weight: bold;
+    padding-bottom: 2px;
+}
+
+i{
+    flex: 1;
+    text-align: center;
+    font-size: 20px;
+    margin-top: 0px;
+}
+
+h1{
+    font-size: 35px;
+    text-align: center;
+    border-bottom: 3px solid #000;
+    padding-bottom: 10px;
+    margin: 10px 0 25px;
+}
+
+
+.pill-tabs {
+    display: flex;
+    list-style: none;
+    padding: 0 0 20px;
+    margin: 0;
+    gap: 10px;
+    border-bottom: 2px solid #ccc;
+}
+
+.pill-tabs li {
+    width: 100%;
+    margin: 0 0;
+    text-align: center;
+}
+
+.pill-tabs a {
+    display: block;
+    font-size: 15px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    color: black;
+    background-color: #e0e0e0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.pill-tabs a:hover {
+    background-color: #d0d0d0;
+}
+
+.pill-tabs a.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.tab-content {
+    margin-top: 20px;
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+
+.dark-mode {
+    background-color: #1e1e1e;
+    color: #fff;
+}
+
+.dark-mode nav {
+    background-color: #333;
+}
+
+.dark-mode .container, .dark-mode .flex {
+    background-color: #333;
+    color: #fff;
+}
+
+.dark-mode .icon i {
+    --fa-primary-color: lightyellow;
+    --fa-secondary-color: lightyellow;
+}
+
+</style>
+<body>
+    
+<!-- Navigation Bar -->
+<nav class="containegr">
+    <a href="/index.html"><i class="fa fa-chevron-left"></i></a>
+    <span class="title">Tes Masuk Kerja</span>
+    <i id="darkModeToggle" class="fa fa-sun"></i>
+</nav>
+
+<div class="container">
+    
+<!-- Pills -->
+<ul class="pill-tabs">
+    <li><a href="#" class="active" onclick="openTab(event, 'tab1')">Psikotest</a></li>
+    <li><a href="#" onclick="openTab(event, 'tab2')">Kompetensi</a></li>
+</ul>
+
+
+<!-- Tabs -->
+
+<div id="tab1" class="tab-content active">
+    <a class="flex" href="antonim.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Antonim</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="sinonim.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Sinonim</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="analogi.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Analogi Kata</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="aritmatika.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Aritmatika Sosial</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="deretangka.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Deret Bilangan</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="derethuruf.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Deret Huruf</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="silogisme.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Penalaran Silogisme</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="analitis.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Penalaran Analitis</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+
+    <a class="flex" href="pasanganrotasi.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Pasangan Rotasi Gambar</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="pauli.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Krapaelin-Pauli</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="medianangka.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Logika Median (Angka) </span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="medianhuruf.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Logika Median (Huruf)</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="logikarelational.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Logika Relational (3 Objek)</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="logikarelational2.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Logika Relational (4 Objek)</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+</div>
+
+<div id="tab2" class="tab-content">
+ <a class="flex" href="grammar.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes English's Grammar</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="twk.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Wawasan Kebangsaan</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+    <a class="flex" href="tkp.html">
+        <span class="icon"><i class="fa-duotone fa-solid fa-sparkles"></i></span>
+        <span class="title">Tes Karakteristik Pribadi</span>
+        <i class="fa fa-chevron-right"></i>
+    </a>
+</div>
+
+
+<script>
+document.getElementById('darkModeToggle').addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    this.classList.toggle('fa-sun');
+    this.classList.toggle('fa-moon');
+});
+</script>
+<script>
+function openTab(event, tabId) {
+    var i, tabContent, tabLinks;
+
+    // Hide all tab content
+    tabContent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabContent.length; i++) {
+        tabContent[i].classList.remove("active");
+    }
+
+    // Remove active class from all tabs
+    tabLinks = document.querySelectorAll(".pill-tabs a");
+    for (i = 0; i < tabLinks.length; i++) {
+        tabLinks[i].classList.remove("active");
+    }
+
+    // Show the current tab, and add an "active" class to the link that opened the tab
+    document.getElementById(tabId).classList.add("active");
+    event.currentTarget.classList.add("active");
+}
+</script>
+
+</body>
+</html>

@@ -50,7 +50,7 @@
 
             <button class="start" onclick="startTest()">Mulai Tes</button>
         </div>
-        <div id="testContainer">
+        <div id="testContainer" style="display: none">
             <div style="display: flex; justify-content: space-between; gap: 15px; width: 100%; margin: 5px auto 20px; border-bottom: 2px solid #000;">
                 <div id="timer">Time (00:00)</div>
                 <div id="question-count">Answered (<span id="answered-count">0</span>)</div>
@@ -60,7 +60,7 @@
             </div>
             <button id="next-button" onclick="nextQuestion()">Next</button>
         </div>
-        <div id="resultsContainer">
+        <div id="resultsContainer" style="display: none">
             <h1>Your Test Result</h1>
 
             <div class="results">

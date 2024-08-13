@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Test Application</title>
+    
+    <link rel="stylesheet" href="/style.css">
+<style>
+        .options {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin: 15px 0 20px;
+        }
+
+        .option {
+            background-color: #e0e0e0;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 60px;
+            text-align: center;
+        }
+
+</style>
+</head>
+<body>
+    <div id="test-container">
+        <div id="startContainer">
+            <h1>Tes Logika Median (Angka)</h1>
+            <div class="guide">
+                <h2>Petunjuk Pengerjaan</h2>
+
+                <ol>
+                    <li>Masukkan durasi tes dalam satuan detik.</li>
+                    <li>Tekan tombol "Mulai Tes".</li>
+                    <li>Pilih angka yang paling jauh dari median.</li>
+                    <li>Anda masih dapat mengubah pilihan sebelum menekan "Next" (jika diperlukan).</li>
+                    <li>Selesaikan tes sebelum waktu habis.</li>
+                    <li>Hasil akan otomatis ditampilkan setelah waktu tes habis.</li>
+                </ol>
+            </div>
+
+            <div class="duration">
+                <label for="duration">Test duration (detik) </label>
+                <input type="option" id="duration" min="1" value="1" />
+            </div>
+
+            <button class="start" onclick="startTest()">Mulai Tes</button>
+        </div>
+        <div id="testContainer">
+            <div style="display: flex; justify-content: space-between; gap: 15px; width: 100%; margin: 5px auto 20px; border-bottom: 2px solid #000;">
+                <div id="timer">Time (00:00)</div>
+                <div id="question-count">Answered (<span id="answered-count">0</span>)</div>
+            </div>
+            <div id="question" class="options">
+                <!-- options will be generated here -->
+            </div>
+            <button id="next-button" onclick="nextQuestion()">Next</button>
+        </div>
+        <div id="resultsContainer">
+            <h1>Your Test Result</h1>
+
+            <div class="results">
+                <table>
+                    <tr>
+                        <td>Terjawab</td>
+                        <td>Benar</td>
+                        <td>Salah</td>
+                    </tr>
+                    <tr>
+                        <td><span id="total-answered">0</span></td>
+                        <td><span id="total-correct">0</span></td>
+                        <td><span id="total-wrong">0</span></td>
+                    </tr>
+                </table>
+
+                <button class="start" onclick="resetTest()">Kembali ke Halaman Awal</button>
+            </div>
+        </div>
+    </div>
+    <script>
+  var acc = document.getElementsByClassName("accordion");
+  var i;
+
+  for (i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var panel = this.nextElementSibling;
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+  }
+</script>
+
+ <script>
+        let totalAnswered = 0;
+        let totalCorrect = 0;
+        let totalWrong = 0;
+        let interval;
+        let testDuration;
+        let selectedoption = null;
+        let correctAnswer = null;
+
+        window.onload = function() {
+            document.getElementById('startContainer').style.display = 'block';
+        };
+
+        function generateRandomoption(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function generateQuestion() {
+            // Generate a random median value between 5 and 35
+            const median = generateRandomoption(5, 35);
+
+            // Generate random offsets for smallest and largest options
+            const offset1 = generateRandomoption(3, 9);
+            const offset2 = generateRandomoption(3, 9);
+
+            // Ensure the offsets are different by at least 1 to 3 units
+            let smallestOffset = offset1 + generateRandomoption(1, 3);
+            let largestOffset = offset2 + generateRandomoption(1, 3);
+
+            // Randomly decide which offset will be used for the smallest and largest options
+            if (Math.random() < 0.5) {
+                [smallestOffset, largestOffset] = [largestOffset, smallestOffset];
+            }
+
+            // Calculate the options, ensuring no option is less than 1
+            const smallest = Math.max(1, median - smallestOffset);
+            const largest = median + largestOffset;
+            const options = [smallest, median, largest];
+
+            // Shuffle the options array
+            options.sort(() => Math.random() - 0.5);
+
+            // Display the options
+            const questionContainer = document.getElementById('question');
+            questionContainer.innerHTML = '';
+            options.forEach((num) => {
+                const optionElement = document.createElement('div');
+                optionElement.textContent = num;
+                optionElement.className = 'option';
+                optionElement.onclick = () => selectAnswer(optionElement, num, smallest, largest);
+                questionContainer.appendChild(optionElement);
+            });
+
+            correctAnswer = Math.abs(largest - smallest) < Math.abs(median - smallest) ? largest : smallest;
+        }
+
+        function selectAnswer(element, num, smallest, largest) {
+            // Remove 'selected' class from previously selected option
+            const options = document.getElementsByClassName('option');
+            for (let i = 0; i < options.length; i++) {
+                options[i].classList.remove('selected');
+            }
+
+            // Add 'selected' class to the current selected option
+            element.classList.add('selected');
+            selectedoption = num;
+        }
+
+        function nextQuestion() {
+            if (selectedoption !== null) {
+                totalAnswered++;
+
+                if (selectedoption === correctAnswer) {
+                    totalCorrect++;
+                } else {
+                    totalWrong++;
+                }
+
+                updateResults();
+                selectedoption = null;
+                generateQuestion();
+            } else {
+                alert("Silakan pilih jawaban sebelum melanjutkan.");
+            }
+        }
+
+        function updateResults() {
+            document.getElementById('total-answered').textContent = totalAnswered;
+            document.getElementById('total-correct').textContent = totalCorrect;
+            document.getElementById('total-wrong').textContent = totalWrong;
+            document.getElementById('answered-count').textContent = totalAnswered;
+        }
+
+        function startTest() {
+            testDuration = parseInt(document.getElementById('duration').value); // get duration in seconds
+            document.getElementById('startContainer').style.display = 'none';
+            document.getElementById('testContainer').style.display = 'block';
+            document.getElementById('resultsContainer').style.display = 'none';
+            generateQuestion();
+            interval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            if (testDuration <= 0) {
+                clearInterval(interval);
+                document.getElementById('testContainer').style.display = 'none';
+                document.getElementById('resultsContainer').style.display = 'block';
+                return;
+            }
+
+            testDuration--;
+
+            const minutes = Math.floor(testDuration / 60);
+            const seconds = testDuration % 60;
+
+            document.getElementById('timer').textContent = `Time (${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')})`;
+        }
+
+        function resetTest() {
+        if (confirm("Apakah Anda yakin ingin mereset tes? Semua catatan hasil tes sebelumnya akan hilang.")) {
+            totalAnswered = 0;
+            totalCorrect = 0;
+            totalWrong = 0;
+            selectedoption = null;
+            document.getElementById('startContainer').style.display = 'block';
+            document.getElementById('resultsContainer').style.display = 'none';
+            updateResults();
+            }
+        }
+    </script>
+
+   </body>
+</html>

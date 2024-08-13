@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Gambar</title>
+    <link rel="stylesheet" href="/style.css">
+<style>
+.images {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.images img {
+  width: 100px;
+  height: 200px;
+  margin: 0 9px;
+  box-sizing: border-box;
+}
+
+.options {
+  margin: 20px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  width: 100%;
+  gap: 10px;
+}
+
+#questionNumber {
+  font-weight: bold;
+}
+
+.option {
+  background: #eee;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+img{
+    border: 1px solid black;
+}
+
+.info{
+   background: #eee;
+   padding: 10px 10px;
+   margin: -5px 0 20px;
+   border-radius: 5px;
+   border: none;
+   font-size: 12px;
+   line-height: 16px;
+}
+</style>
+</head>
+<body>
+    <div id="test-container">
+        <!-- startContainer -->
+        <div id="startContainer">
+            <h1>Cognitive Online Test</h1>
+
+            <div class="guide">
+                <h2>Petunjuk Pengerjaan</h2>
+                <ol>
+                    <li>Masukkan durasi tes dalam satuan detik.</li>
+                    <li>Tekan tombol "Start Test".</li>
+                    <li>Temukan pasangan gambar (atas-bawah) yang keduanya merupakan rotasi huruf F (90°/180°/270°).</li>
+                    <li>Hitung jumlah pasang yang sesuai dan pilih jawaban.</li>
+                    <li>Anda masih dapat mengubah pilihan sebelum menekan "Next" (jika diperlukan).</li>
+                    <li>Selesaikan tes sebelum waktu habis.</li>
+                    <li>Hasil akan otomatis ditampilkan setelah waktu tes habis.</li>
+                </ol>
+            </div>
+
+            <div class="duration">
+                <label for="duration">Durasi Tes (detik) </label>
+                <input type="number" id="duration" min="1" value="15" />
+            </div>
+            <button onclick="startTest()">Start Test</button>
+        </div>
+
+        <!-- Test Area -->
+        
+        <div id="testContainer" style="display: none;">
+            <div class="notification">                
+                <div id="questionNumber"></div>
+                <div id="timer">Time (00:00)</div>
+            </div>
+            <div class="info">Hitung pasangan gambar (atas-bawah) yang keduanya merupakan rotasi huruf F (90°/180°/270°).</div>
+            <div class="images">
+                <img id="img1" src="" alt="Gambar 1" />
+                <img id="img2" src="" alt="Gambar 2" />
+                <img id="img3" src="" alt="Gambar 3" />
+            </div>
+            <div class="options">
+                <div class="option" onclick="selectAnswer(this, 0)">0</div>
+                <div class="option" onclick="selectAnswer(this, 1)">1</div>
+                <div class="option" onclick="selectAnswer(this, 2)">2</div>
+                <div class="option" onclick="selectAnswer(this, 3)">3</div>
+            </div>
+            <button id="nextBtn" onclick="nextQuestion()">Next</button>
+        </div>
+
+        <!-- Results -->
+        <div id="resultsContainer" style="display: none;">
+            <h1>Your Test Result</h1>
+            <table>
+                <tr>
+                    <td>Terjawab</td>
+                    <td>Benar</td>
+                    <td>Salah</td>
+                </tr>
+                <tr>
+                    <td id="totalAnswered">0</td>
+                    <td id="totalCorrect">0</td>
+                    <td id="totalWrong">0</td>
+                </tr>
+            </table>
+            <button onclick="resetTest()">Restart</button>
+        </div>
+
+    </div>
+<script>
+    const images = Array.from({ length: 30 }, (_, i) => `img/${i + 1}.jpg`);
+    const scoringImages = ["img/1.jpg", "img/2.jpg", "img/6.jpg", "img/7.jpg", "img/11.jpg", "img/12.jpg"];
+    let correctAnswer = 0;
+    let selectedAnswer = null;
+    let totalCorrect = 0;
+    let totalWrong = 0;
+    let totalAnswered = 0;
+    let timer;
+    let duration = 0;
+
+    function getRandomImage() {
+        return images[Math.floor(Math.random() * images.length)];
+    }
+
+    function displayImages() {
+        const img1 = getRandomImage();
+        const img2 = getRandomImage();
+        const img3 = getRandomImage();
+
+        document.getElementById("img1").src = img1;
+        document.getElementById("img2").src = img2;
+        document.getElementById("img3").src = img3;
+
+        correctAnswer = calculateScore([img1, img2, img3]);
+    }
+
+    function calculateScore(selectedImages) {
+        return selectedImages.reduce((score, img) => {
+            return score + (scoringImages.includes(img) ? 1 : 0);
+        }, 0);
+    }
+
+    function selectAnswer(button, answer) {
+        const buttons = document.querySelectorAll(".options div");
+        buttons.forEach((btn) => btn.classList.remove("selected"));
+        button.classList.add("selected");
+        selectedAnswer = answer;
+    }
+
+    function nextQuestion() {
+        if (selectedAnswer !== null) {
+            totalAnswered++;
+            if (selectedAnswer === correctAnswer) {
+                totalCorrect++;
+            } else {
+                totalWrong++;
+            }
+        }
+        selectedAnswer = null;
+        displayImages();
+        updateQuestionNumber();
+
+        // Menghapus kelas 'selected' dari semua tombol setelah Next ditekan
+        const buttons = document.querySelectorAll(".options div");
+        buttons.forEach((btn) => btn.classList.remove("selected"));
+    }
+    function updateQuestionNumber() {
+        document.getElementById("questionNumber").textContent = `Soal No. ${totalAnswered}`;
+    }
+
+    function startTest() {
+        duration = parseInt(document.getElementById("duration").value); // convert to seconds
+        document.getElementById("startContainer").style.display = "none";
+        document.getElementById("testContainer").style.display = "block";
+        displayImages();
+        updateQuestionNumber();
+        startTimer();
+    }
+
+    function startTimer() {
+        timer = setInterval(function () {
+            const minutes = Math.floor(duration / 60);
+            const seconds = duration % 60;
+            document.getElementById("timer").textContent = `Time (${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")})`;
+            if (duration === 0) {
+                endTest();
+            } else {
+                duration--;
+            }
+        }, 1000);
+    }
+
+    function endTest() {
+        clearInterval(timer);
+        document.getElementById("testContainer").style.display = "none";
+        document.getElementById("resultsContainer").style.display = "block";
+        document.getElementById("totalAnswered").textContent = totalAnswered;
+        document.getElementById("totalCorrect").textContent = totalCorrect;
+        document.getElementById("totalWrong").textContent = totalWrong;
+    }
+
+    function resetTest() {
+        // Reset semua variabel
+        totalCorrect = 0;
+        totalWrong = 0;
+        totalAnswered = 0;
+        duration = 0;
+        selectedAnswer = null;
+
+        // Sembunyikan hasil dan tampilkan kembali halaman pengaturan durasi
+        document.getElementById("resultsContainer").style.display = "none";
+        document.getElementById("startContainer").style.display = "block";
+    }
+</script>
+
+</body>
+</html>

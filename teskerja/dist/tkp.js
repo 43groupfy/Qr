@@ -1,4 +1,4 @@
-      const questionsPart1 = [
+      const questions = [
         {
           question: "Saat akan mengantarkan surat pada sebuah instansi, saya menyadari surat tersebut rusak terkena tumpahan minuman. Saya akan ... ",
           options: ["Panik karena surat tersebut telah ditunggu", "Segera mencetak surat baru", "Tetap memberikan surat tersebut dan berpura - pura tidak tahu", "Tidak jadi memberikan surat tersebut", "Meminta maaf dan menjelaskan pada pihak instansi dan meminta waktu untuk menyiapkan surat baru"],

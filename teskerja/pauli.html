@@ -1,0 +1,214 @@
+<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tes Kraepelin-Pauli (Tes Koran)</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+<style>
+#question{
+    font-family: "Euclid Circular A", sans-serif;
+    font-size: 100px;
+    text-align: center;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+    <!-- Kontainer Utama -->
+    <div id="test-container">
+        <!-- Form duration Tes -->
+        <div id="startContainer">
+            
+            <h1>Kraepelin-Pauli Test</h1>
+
+            <div class="guides">
+                <h2>Petunjuk Pengerjaan</h2>
+                <ol>
+                    <li>Masukkan duration tes dalam satuan detik.</li>
+                    <li>Tekan tombol "Start Test".</li>
+                    <li>Input jawaban pada kotak sebelah kanan. </li>
+                    <li>Jawaban Anda akan otomatis tersimpan.</li>
+                    <li>Soal baru akan otomatis muncul setelah Anda memasukkan jawaban.</li>
+                    <li>Kerjakan soal sebanyak mungkin sebelum waktu habis.</li>
+                    <li>Hasil akan otomatis ditampilkan setelah waktu tes habis.</li>
+                </ol>
+            </div>
+            
+            <div class="duration">
+                <label for="duration">Test duration (detik) </label>
+                <input type="number" id="duration" min="1" value="1" />
+            </div>
+            <button id="startButton">Start Test</button>
+        </div>
+
+        <!-- Tombol Refresh -->        
+        
+        <!-- Kontainer Timer dan Total Jawaban -->
+        <div id="testContainer" style="display:none; width: 100%;text-align: center">
+            <div class="notification">
+                <div id="timer">Waktu: 00:00</div>
+                <div>Terjawab (<span id="totalAnswers">0</span>)</div>
+            </div>
+            <div class="flex">
+                <div id="question" style="flex: 1; margin: 10px"> </div>
+                <input type="number" id="answer" placeholder="Jawab disini" style="flex: 1; border: 1px solid #ccc;text-align: center; font-size: 15px">
+            </div>
+        </div>
+        
+        <!-- Skor Akhir -->
+        <div id="resultsContainer" style="display:none;">
+            <h1>Your Test Result</h1>
+            <table style="table-layout: fixed;">
+                <tr>
+                    <td>Terjawab</td>
+                    <td>Benar</td>
+                    <td>Salah</td>
+                </tr>
+                <tr>
+                <td id="totalAnswersScore">0</td>
+                <td id="correctAnswers">0</td>
+                <td id="wrongAnswers">0</td>
+               </tr>
+            </table>
+            
+            <button id="refreshButton">Refresh</button>
+
+            
+            <button class="accordion">Detail Jawaban</button>
+            <div class="panel">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Soal</th>
+                        <th>Jawaban</th>
+                        <th>Hasil</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreTable"></tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+    
+<script>
+  var acc = document.getElementsByClassName("accordion");
+  var i;
+
+  for (i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var guide = this.nextElementSibling;
+      if (guide.style.maxHeight) {
+        guide.style.maxHeight = null;
+      } else {
+        guide.style.maxHeight = guide.scrollHeight + "px";
+      }
+    });
+  }
+</script>
+
+
+
+    <script>
+        // Variabel untuk menyimpan data
+        let totalAnswers = 0;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let timer;
+        let testDuration;
+        let lastNumber = Math.floor(Math.random() * 10); // Angka pertama
+
+        // Fungsi untuk menghasilkan soal baru
+        function generateQuestion() {
+            const num2 = Math.floor(Math.random() * 10);
+            const question = `${lastNumber} + ${num2}`;
+            lastNumber = num2; // Update angka terakhir
+            return question;
+        }
+
+        // Fungsi untuk memeriksa jawaban pengguna
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('answer').value);
+            const question = document.getElementById('question').innerText;
+            const [num1, num2] = question.split(' + ').map(num => parseInt(num));
+            const correctAnswer = (num1 + num2) % 10;
+
+            const resultText = (userAnswer === correctAnswer) ? 'Benar' : 'Salah';
+            const scoreTable = document.getElementById('scoreTable');
+            const newRow = scoreTable.insertRow();
+
+            // Tambahkan jawaban ke tabel
+            const questionNumber = scoreTable.rows.length;
+            newRow.innerHTML = `<td>${questionNumber}</td><td>${question}</td><td>${userAnswer}</td><td>${resultText}</td>`;
+
+            // Update total jawaban
+            totalAnswers++;
+            if (userAnswer === correctAnswer) {
+                correctAnswers++;
+            } else {
+                wrongAnswers++;
+            }
+
+            document.getElementById('totalAnswers').innerText = totalAnswers;
+            document.getElementById('totalAnswersScore').innerText = totalAnswers;
+            document.getElementById('correctAnswers').innerText = correctAnswers;
+            document.getElementById('wrongAnswers').innerText = wrongAnswers;
+
+            // Bersihkan jawaban pengguna
+            document.getElementById('answer').value = '';
+            // Buat soal baru
+            document.getElementById('question').innerText = generateQuestion();
+        }
+
+        // Fungsi untuk memperbarui timer
+        function updateTime() {
+            if (testDuration < 0) {
+                clearInterval(timer);
+                endTest();
+                return;
+            }
+
+            // Format waktu MM:SS
+            const minutes = Math.floor(testDuration / 60);
+            const seconds = testDuration % 60;
+            const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            document.getElementById('timer').innerText = `Waktu: ${formattedTime}`;
+            testDuration--;
+        }
+
+        // Fungsi untuk mengakhiri tes
+        function endTest() {
+            document.getElementById('testContainer').style.display = 'none';
+            document.getElementById('resultsContainer').style.display = 'block';
+        }
+
+        // Fungsi untuk memulai tes
+        function startTest() {
+            testDuration = parseInt(document.getElementById('duration').value);
+
+            if (isNaN(testDuration) || testDuration <= 0) {
+                alert('Masukkan duration tes yang valid.');
+                return;
+            }
+
+            // Tampilkan elemen yang diperlukan
+            document.getElementById('startContainer').style.display = 'none';
+            document.getElementById('testContainer').style.display = 'block';
+
+            // Inisialisasi pertanyaan pertama dan timer
+            document.getElementById('question').innerText = generateQuestion();
+            document.getElementById('answer').value = '';
+            timer = setInterval(updateTime, 1000);
+        }
+
+        // Event listener
+        document.getElementById('startButton').addEventListener('click', startTest);
+        document.getElementById('answer').addEventListener('input', checkAnswer);
+        document.getElementById('refreshButton').addEventListener('click', () => location.reload());
+
+    </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-      const questionsPart1 = [
+      const questions = [
         {
           question: "Apa yang dimaksud dengan Bhinneka Tunggal Ika?",
           options: ["Kesatuan dalam keberagaman", "Kesamaan dalam perbedaan", "Kebhinekaan dalam satu kesatuan", "Kesatuan tanpa perbedaan"],

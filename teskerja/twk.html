@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tes Wawasan Kebangsaan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="test-container">
+        <!-- Controls -->
+        <div id="startContainer" style="display: none;">
+            <h1>Tes Wawasan Kebangsaan</h1>
+
+            <div class="guide">
+                <h2>Petunjuk Pengerjaan</h2>
+                <ol>
+                    <li>Masukkan duration tes dalam satuan detik.</li>
+                    <li>Tekan tombol "Start Test".</li>
+                    <li>Pilih jawaban yang Anda anggap paling benar.</li>
+                    <li>Anda masih dapat mengubah pilihan sebelum menekan "Next" (jika diperlukan).</li>
+                    <li>Selesaikan tes sebelum waktu habis.</li>
+                    <li>Hasil akan otomatis ditampilkan setelah waktu tes habis.</li>
+                </ol>
+            </div>
+
+            <div class="duration">
+                <label for="duration">Test duration (detik) </label>
+                <input type="number" id="duration" min="1" value="15" />
+            </div>
+            <button onclick="startTest()">Start Test</button>
+        </div>
+
+        <!-- Test Area -->
+        <div id="testContainer" style="display: none;">
+            <div class="notification">
+                <div id="timer">Time (00:00)</div>
+                <div id="question-count">Answered (<span id="answered-count">0</span>)</div>
+            </div>
+
+            <div id="question"></div>
+            <div id="options"></div>
+            <button onclick="nextQuestion()">Next</button>
+        </div>
+
+        <!-- Results -->
+        <div id="resultsContainer" style="display: none;">
+            <h1>Your Test Results</h1>
+            <table>
+                <tr>
+                    <td>Terjawab</td>
+                    <td>Benar</td>
+                    <td>Salah</td>
+                </tr>
+                <tr>
+                    <td><span id="total-answered">0</span></td>
+                    <td><span id="total-correct">0</span></td>
+                    <td><span id="total-wrong">0</span></td>
+                </tr>
+            </table>
+            <button onclick="resetTest()">Restart</button>
+        </div>
+    </div>
+    <!-- Import the questions file -->
+    <script src="dist/twk.js"></script>
+    
+    <!-- Main script -->
+    <script>
+        let totalAnswered = 0;
+        let totalCorrect = 0;
+        let totalWrong = 0;
+        let interval;
+        let testDuration;
+        let selectedOption = null;
+        let correctAnswer = null;
+        let currentQuestionIndex = 0;
+
+        // The questions variable is now coming from questions.js
+        // const questions = [ /* Moved to questions.js */ ];
+
+        window.onload = function() {
+            document.getElementById('startContainer').style.display = 'block';
+        };
+
+        function getRandomQuestion() {
+            // Select a random question from the array
+            const randomIndex = Math.floor(Math.random() * questions.length);
+            currentQuestionIndex = randomIndex;
+            return questions[randomIndex];
+        }
+
+        function generateQuestion() {
+            const questionData = getRandomQuestion();
+            const questionContainer = document.getElementById('question');
+            const optionsContainer = document.getElementById('options');
+
+            // Display the question
+            questionContainer.innerHTML = `<h4>${questionData.question}</h4>`;
+            optionsContainer.innerHTML = '';
+
+            // Display the options
+            questionData.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.textContent = option;
+                optionElement.className = 'option';
+                optionElement.onclick = () => selectOption(optionElement, index);
+                optionsContainer.appendChild(optionElement);
+            });
+
+            correctAnswer = questionData.correctIndex;
+        }
+
+        function selectOption(element, index) {
+            // Remove 'selected' class from previously selected option
+            const options = document.getElementsByClassName('option');
+            for (let i = 0; i < options.length; i++) {
+                options[i].classList.remove('selected');
+            }
+
+            // Add 'selected' class to the current selected option
+            element.classList.add('selected');
+            selectedOption = index;
+        }
+
+        function nextQuestion() {
+            if (selectedOption !== null) {
+                totalAnswered++;
+
+                if (selectedOption === correctAnswer) {
+                    totalCorrect++;
+                } else {
+                    totalWrong++;
+                }
+
+                updateResults();
+            }
+            selectedOption = null; // Reset selected option for next question
+            generateQuestion();
+        }
+
+        function updateResults() {
+            document.getElementById('total-answered').textContent = totalAnswered;
+            document.getElementById('total-correct').textContent = totalCorrect;
+            document.getElementById('total-wrong').textContent = totalWrong;
+            document.getElementById('answered-count').textContent = totalAnswered;
+        }
+
+        function startTest() {
+            const durationInput = document.getElementById('duration').value;
+
+            if (!durationInput || durationInput <= 0) {
+                alert("Please enter a valid duration for the test.");
+                return;
+            }
+
+            testDuration = parseInt(durationInput); // get duration in seconds
+            document.getElementById('startContainer').style.display = 'none';
+            document.getElementById('testContainer').style.display = 'block';
+            document.getElementById('resultsContainer').style.display = 'none';
+            generateQuestion();
+            interval = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            if (testDuration <= 0) {
+                clearInterval(interval);
+                document.getElementById('testContainer').style.display = 'none';
+                document.getElementById('resultsContainer').style.display = 'block';
+                return;
+            }
+
+            testDuration--;
+
+            const minutes = Math.floor(testDuration / 60);
+            const seconds = testDuration % 60;
+
+            document.getElementById('timer').textContent = `Time (${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')})`;
+        }
+
+        function resetTest() {
+            if (confirm("Apakah Anda yakin ingin mereset tes? Semua kemajuan akan hilang.")) {
+                totalAnswered = 0;
+                totalCorrect = 0;
+                totalWrong = 0;
+                selectedOption = null;
+                document.getElementById('startContainer').style.display = 'block';
+                document.getElementById('resultsContainer').style.display = 'none';
+                updateResults();
+            }
+        }
+    </script>
+
+</body>
+</html>

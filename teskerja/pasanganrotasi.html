@@ -82,8 +82,8 @@ img{
         
         <div id="testContainer" style="display: none;">
             <div class="notification">                
-                <div id="questionNumber"></div>
                 <div id="timer">Time (00:00)</div>
+                <div id="questionNumber"></div>
             </div>
             <div class="info">Hitung pasangan gambar (atas-bawah) yang keduanya merupakan rotasi huruf F (90°/180°/270°).</div>
             <div class="images">
@@ -177,7 +177,7 @@ img{
         buttons.forEach((btn) => btn.classList.remove("selected"));
     }
     function updateQuestionNumber() {
-        document.getElementById("questionNumber").textContent = `Soal No. ${totalAnswered}`;
+        document.getElementById("questionNumber").textContent = `Answered: ${totalAnswered}`;
     }
 
     function startTest() {

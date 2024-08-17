@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+    <title>Kuis MBTI</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 0;
+    margin: 0px auto;
+    background: #f4f4f9;
+}
+#container {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 96%;
+    max-width: 600px;
+    box-sizing: border-box;
+    margin: 15px auto;
+}
+.hidden {
+    display: none;
+}
+
+h1 {
+    line-height: 1.5em;
+}
+
+#testContainer,
+#resultsContainer {
+    margin: 20px auto 0;
+    width: 100%;
+    max-width: 600px;
+}
+button {
+    background-color: #5342d4; /* Warna latar belakang tombol aktif */
+    color: white; /* Warna teks tombol aktif */
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    margin: 20px 0;
+}
+
+button:hover {
+    background-color: #1d06ef; /* Warna latar belakang saat hover */
+}
+
+button:disabled {
+    background-color: #ccc; /* Warna latar belakang tombol disabled */
+    color: #666; /* Warna teks tombol disabled */
+    cursor: not-allowed; /* Kursor saat hover pada tombol disabled */
+}
+
+.progress-bar {
+    height: 20px;
+    background-color: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: -10px;
+}
+.progress {
+    height: 100%;
+    width: 0;
+    background-color: #4caf50;
+    text-align: right;
+    color: white;
+    padding-right: 5px;
+    border-radius: 10px;
+}
+.option {
+    padding: 15px 10px;
+    margin: 10px 0;
+    background-color: #fff;
+    border: 1.5px solid #aaa;
+    border-radius: 10px;
+    cursor: pointer;
+    line-height: 1.4em;
+}
+.option:hover {
+    background-color: #7fea81;
+}
+.option.selected {
+    border: 1.5px solid #4caf50;
+    background: #ecffee;
+}
+table {
+    margin: 10px auto;
+    width: 100%;
+    border-collapse: collapse;
+    box-sizing: border-box;
+    font-size: 12px;
+}
+table,
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+th {
+    background-color: #f2f2f2;
+}
+
+#question {
+    display: none;
+}
+#progressText {
+    color: #fff;
+    margin-top: -20px;
+}
+.soal {
+    margin: 20px auto;
+    padding: 20px 15px;
+    background: #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    line-height: 1.4em;
+}
+h2 {
+    margin: -20px 0 25px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #222;
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.bar-container {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.bar-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.bar {
+    height: 20px;
+    width: 0;
+    transition: width 0.5s ease;
+    border: 0px solid #000;
+}
+
+.label {
+    margin-left: 10px;
+    width: 50px;
+    font-size: 10px;
+}
+
+/* Warna untuk setiap pasangan */
+#barI {
+    background-color: #4caf50; /* Hijau */
+}
+
+#barE {
+    background-color: #ff5722; /* Oranye */
+}
+
+#barS {
+    background-color: #2196f3; /* Biru */
+}
+
+#barN {
+    background-color: #ffeb3b; /* Kuning */
+}
+
+#barT {
+    background-color: #9c27b0; /* Ungu */
+}
+
+#barF {
+    background-color: #00bcd4; /* Cyan */
+}
+
+#barJ {
+    background-color: #673ab7; /* Ungu Tua */
+}
+
+#barP {
+    background-color: #ff9800; /* Oranye Terang */
+}
+#yourType {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    width: 100%;
+    margin-bottom: 20px;
+    background: #eee;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.type {
+    font-size: 29px; /* Ukuran font untuk tipe kepribadian */
+    font-weight: bold; /* Membuat tipe kepribadian menjadi tebal */
+    color: #333; /* Warna teks tipe kepribadian */
+}
+
+.description {
+    font-size: 11px; /* Ukuran font untuk deskripsi */
+    color: #666; /* Warna teks deskripsi */
+    margin-top: 12px; /* Jarak atas antara tipe kepribadian dan deskripsi */
+}
+</style>
+</head>
+<body>
+<div id="container">
+    <div id="startContainer">
+        <h1>Selamat Datang di MBTI test</h1>
+        <button onclick="startQuiz()">Mulai Test</button>
+    </div>
+
+    <div id="testContainer" class="hidden">
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div id="progressText" class="progress-text"></div>
+
+        <div id="question-container" class="question-container">
+            <h2 id="question"></h2>
+            <div class="soal">Mana yang paling menggambarkanmu?</div>
+            <div id="options-container"></div>
+        </div>
+        <button id="next-btn" onclick="nextQuestion()" disabled>Next</button>
+    </div>
+
+    <div id="resultsContainer" class="hidden">
+        <h2>Your Test Result</h2>
+        <div class="bar-container">
+            <div id="yourType"></div>
+            <div class="bar-wrapper">
+                <span>I</span>
+                <span id="percentI" class="label"></span>
+                <div id="barI" class="bar"></div>
+                <div id="barE" class="bar"></div>
+                <span id="percentE" class="label"></span>
+                <span>E</span>
+            </div>
+            <div class="bar-wrapper">
+                <span>S</span>
+                <span id="percentS" class="label"></span>
+                <div id="barS" class="bar"></div>
+                <div id="barN" class="bar"></div>
+                <span id="percentN" class="label"></span>
+                <span>N</span>
+            </div>
+            <div class="bar-wrapper">
+                <span>T</span>
+                <span id="percentT" class="label"></span>
+                <div id="barT" class="bar"></div>
+                <div id="barF" class="bar"></div>
+                <span id="percentF" class="label"></span>
+                <span>F</span>
+            </div>
+            <div class="bar-wrapper">
+                <span>J</span>
+                <span id="percentJ" class="label"></span>
+                <div id="barJ" class="bar"></div>
+                <div id="barP" class="bar"></div>
+                <span id="percentP" class="label"></span>
+                <span>P</span>
+            </div>
+            <button onclick="resetQuiz()">Reset</button>
+        </div>
+    </div>
+</div>
+ 
+<script>
+const questions = [
+    { question: "1/60", options: { I: "Saya lebih memilih berkomunikasi dengan menulis", E: "Saya lebih memilih berkomunikasi dengan bicara" } },
+    { question: "2/60", options: { I: "Saya menemukan dan mengembangkan ide dengan merenungkan", E: "Saya menemukan dan mengembangkan ide dengan mendiskusikannya" } },
+    { question: "3/60", options: { I: "Saya berorientasi pada dunia internal (memori, pemikiran, ide)", E: "Saya berorientasi pada dunia eksternal (kegiatan, orang)" } },
+    { question: "4/60", options: { I: "Saya fokus pada sedikit hobi namun mendalam", E: "Saya fokus pada banyak hobi secara luas dan umum" } },
+    { question: "5/60", options: { I: "Saya tertutup dan mandiri", E: "Saya suka bersosial dan ekspresif" } },
+    { question: "6/60", options: { I: "Bagi saya pertemuan dengan orang lain dan aktivitas sosial itu melelahkan", E: "Bagi saya bertemu orang dan aktivitas sosial itu membuat bersemangat" } },
+    { question: "7/60", options: { I: "Saya beraktifitas sendirian di rumah menyenangkan", E: "Saya beraktifitas sendirian di rumah membosankan" } },
+    { question: "8/60", options: { I: "Saya berinisiatif bila situasi memaksa atau berhubungan dengan kepentingan sendiri", E: "Saya berinisiatif tinggi hampir dalam berbagai hal meskipun tidak berhubungan dengan dirinya" } },
+    { question: "9/60", options: { I: "Saya lebih memilih tempat yang tenang dan pribadi untuk berkonsentrasi", E: "Saya lebih memilih tempat yang ramai dan banyak interaksi / aktifitas" } },
+    { question: "10/60", options: { I: "Saya berpikir secara matang sebelum bertindak", E: "Saya berani bertindak tanpa terlalu lama berfikir" } },
+    { question: "11/60", options: { I: "Saya menyimpan semangat dalam hati", E: "Saya mengekspresikan semangat" } },
+    { question: "12/60", options: { I: "Saya mencari kesempatan untuk berkomunikasi secara perorangan", E: "Saya memilih berkomunikasi pada sekelompok orang" } },
+    { question: "13/60", options: { I: "Saya lebih suka komunikasi tidak langsung (telp, surat, e-mail)", E: "Saya lebih suka komunikasi langsung (tatap muka)" } },
+    { question: "14/60", options: { I: "Saya membangun ide dengan matang baru membicarakannya", E: "Saya membangun ide pada saat berbicara" } },
+    { question: "15/60", options: { I: "Saya berhati-hati, penuh pertimbangan, kaku", E: "Saya spontan, easy going, fleksibel" } },
+    { question: "16/60", options: { S: "Saya bergerak dari detail ke gambaran umum sebagai kesimpulan akhir", N: "Saya bergerak dari gambaran umum baru ke detail" } },
+    { question: "17/60", options: { S: "Saya berbicara mengenai masalah yang dihadapi hari ini dan langkah-langkah praktis mengatasinya", N: "Saya berbicara mengenai visi masa depan dan konsep-konsep mengenai visi tersebut" } },
+    { question: "18/60", options: { S: "Saya menggunakan pengalaman sebagai pedoman", N: "Saya nenggunakan imajinasi dan perenungan sebagai pedoman" } },
+    { question: "19/60", options: { S: "Bagi saya SOP sangat membantu", N: "Bagi saya SOP sangat membosankan" } },
+    { question: "20/60", options: { S: "Saya seorang yang prosedural dan tradisional", N: "Saya seorang yang bebas dan dinamis" } },
+    { question: "21/60", options: { S: "Saya memilih fakta lebih penting daripada ide inspiratif", N: "Saya memilih ide inspiratif lebih penting daripada fakta" } },
+    { question: "22/60", options: { S: "Bagi saya kontinuitas dan stabilitas lebih diutamakan", N: "Bagi saya Perubahan dan variasi lebih diutamakan" } },
+    { question: "23/60", options: { S: "Saya bertindak step by step dengan timeframe yang jelas", N: "Saya bertindak dengan semangat tanpa menggunakan timeframe" } },
+    { question: "24/60", options: { S: "Saya nenarik kesimpulan dengan lama dan hati-hati", N: "Saya menarik kesimpulan dengan cepat sesuai naluri" } },
+    { question: "25/60", options: { S: "Saya mengklarifikasi ide dan teori sebelum dipraktekkan", N: "Saya memahami ide dan teori saat mempraktekkannya langsung" } },
+    { question: "26/60", options: { S: "Saya berfokus pada masa kini (apa yang bisa diperbaiki sekarang)", N: "Saya berfokus pada masa depan (apa yang mungkin dicapai di masa depan)" } },
+    { question: "27/60", options: { S: "Saya secara konsisten mengamati dan mengingat detail", N: "Saya mengamati dan mengingat detail hanya bila berhubungan dengan pola" } },
+    { question: "28/60", options: { S: "Saya seorang yang praktis", N: "Saya seorang yang konseptual" } },
+    { question: "29/60", options: { S: "Saya menggunakan keterampilan yang sudah dikuasai", N: "Saya menyukai tantangan untuk menguasai keterampilan baru" } },
+    { question: "30/60", options: { S: "Saya memilih cara yang sudah ada dan sudah terbukti", N: "Saya memilih cara yang unik dan belum dipraktekkan orang lain" } },
+    { question: "31/60", options: { T: "Saya obyektif", F: "Saya subyektif" } },
+    { question: "32/60", options: { T: "Saya diyakinkan dengan penjelasan yang masuk akal", F: "Saya diyakinkan dengan penjelasan yang menyentuh perasaan" } },
+    { question: "33/60", options: { T: "Saya berorientasi tugas dan job description", F: "Saya berorientasi pada manusia dan hubungan" } },
+    { question: "34/60", options: { T: "Saya mengambil keputusan berdasar logika dan aturan main", F: "Saya mengambil keputusan berdasar perasaan pribadi dan kondisi orang lain" } },
+    { question: "35/60", options: { T: "Saya mengemukakan tujuan dan sasaran lebih dahulu", F: "Saya mengemukakan kesepakatan terlebih dahulu" } },
+    { question: "36/60", options: { T: "Saya menganalisa", F: "Saya berempati" } },
+    { question: "37/60", options: { T: "Saya menghargai seseorang karena skill dan faktor teknis", F: "Saya menghargai seseorang karena sifat dan perilakunya" } },
+    { question: "38/60", options: { T: "Saya melibatkan perasaan itu tidak profesional", F: "Saya terlalu kaku pada peraturan dan pekerjaan itu kejam" } },
+    { question: "39/60", options: { T: "Bagi saya, yang penting tujuan tercapai", F: "Saya Bagi saya, yang penting situasi harmonis terjaga" } },
+    { question: "40/60", options: { T: "Saya mempertanyakan", F: "Saya mengakomodasi" } },
+    { question: "41/60", options: { T: "Saya sering dianggap keras kepala", F: "Saya sering dianggap terlalu memihak" } },
+    { question: "42/60", options: { T: "Saya bersemangat saat mengkritik dan menemukan kesalahan", F: "Saya bersemangat saat menolong orang keluar dari kesalahan dan meluruskan" } },
+    { question: "43/60", options: { T: "Bagi saya, standar harus ditegakkan di atas segalanya (itu menunjukkan kehormatan dan harga diri)", F: "Bagi saya, perasaan manusia lebih penting dari sekadar standar (yang adalah benda mati)" } },
+    { question: "44/60", options: { T: "Saya menuntut perlakuan yang adil dan sama pada semua orang", F: "Saya menuntut perlakuan khusus sesuai karakteristik masing-masing orang" } },
+    { question: "45/60", options: { T: "Saya mementingkan sebab-akibat", F: "Saya mementingkan nilai-nilai personal" } },
+    { question: "46/60", options: { J: "Saya terencana dan memiliki deadline jelas", P: "Saya spontan, fleksibel, tidak diikat waktu" } },
+    { question: "47/60", options: { J: "Saya tidak menyukai hal-hal yang bersifat mendadak dan di luar perencanaan", P: "Saya perubahan mendadak tidak jadi masalah" } },
+    { question: "48/60", options: { J: "Bagi saya, aturan, jadwal dan target akan sangat membantu dan memperjelas tindakan", P: "Bagi saya, aturan, jadwal dan target sangat mengikat dan membebani" } },
+    { question: "49/60", options: { J: "Saya berorientasi pada hasil", P: "Saya berorientasi pada proses" } },
+    { question: "50/60", options: { J: "Saya mengatur orang lain dengan tata tertib agar tujuan tercapai", P: "Saya membiarkan orang lain bertindak bebas asalkan tujuan tercapai" } },
+    { question: "51/60", options: { J: "Saya fokus pada target dan mengabaikan hal-hal baru", P: "Saya memperhatikan hal-hal baru dan siap menyesuaikan diri serta mengubah target" } },
+    { question: "52/60", options: { J: "Saya berpegang teguh pada pendirian", P: "Pendirian saya masih bisa berubah tergantung situasi nantinya" } },
+    { question: "53/60", options: { J: "Saya merasa tenang bila semua sudah diputuskan", P: "Saya merasa nyaman bila situasi tetap terbuka terhadap pilihan-pilihan lain" } },
+    { question: "54/60", options: { J: "Bagi saya, ketidakpastian membuat bingung dan meresahkan", P: "Bagi saya, ketidakpastian itu seru, menegangkan dan membuat hati lebih senang" } },
+    { question: "55/60", options: { J: "Bagi saya, situasi last minute sangat menyiksa, membuat stress dan merupakan kesalahan", P: "Bagi saya, situasi last minute membuat bersemangat dan memunculkan potensi" } },
+    { question: "56/60", options: { J: "Bagi saya, perubahan adalah musuh", P: "Bagi saya, perubahan adalah semangat hidup" } },
+    { question: "57/60", options: { J: "Saya bertindak sesuai apa yang sudah direncanakan", P: "Saya bertindak sesuai situasi dan kondisi yang terjadi saat itu" } },
+    { question: "58/60", options: { J: "Bagi saya, hidup harus sudah diatur dari awal", P: "Bagi saya, hidup seharusnya mengalir sesuai kondisi" } },
+    { question: "59/60", options: { J: "Bagi saya, daftar dan checklist adalah panduan penting", P: "Bagi saya, daftar dan checklist adalah tugas dan beban" } },
+    { question: "60/60", options: { J: "Saya puas ketika mampu menjalankan semuanya sesuai rencana", P: "Saya puas ketika mampu beradaptasi dengan momentum yang terjadi" } },
+];
+
+let currentQuestion = 0;
+let selectedOption = null;
+let answers = { I: 0, E: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+function startQuiz() {
+    // Acak urutan soal sebelum memulai quiz
+    shuffleQuestions();
+
+    document.getElementById("startContainer").classList.add("hidden");
+    document.getElementById("testContainer").classList.remove("hidden");
+    showQuestion();
+    updateProgress();
+}
+
+function shuffleQuestions() {
+    for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+    }
+}
+
+function showQuestion() {
+    const question = questions[currentQuestion];
+    document.getElementById("question").innerText = question.question;
+
+    const optionsContainer = document.getElementById("options-container");
+    optionsContainer.innerHTML = "";
+
+    Object.entries(question.options).forEach(([key, value]) => {
+        const optionDiv = document.createElement("div");
+        optionDiv.className = "option";
+        optionDiv.innerText = value;
+        optionDiv.onclick = () => selectOption(key);
+        optionsContainer.appendChild(optionDiv);
+    });
+
+    // Disable the "Next" button initially
+    document.getElementById("next-btn").disabled = true;
+}
+
+function selectOption(option) {
+    selectedOption = option;
+
+    // Menghapus kelas 'selected' dari semua elemen
+    document.querySelectorAll(".option").forEach((el) => el.classList.remove("selected"));
+
+    // Menambahkan kelas 'selected' pada elemen yang dipilih
+    const optionsContainer = document.getElementById("options-container");
+    optionsContainer.querySelectorAll(".option").forEach((el) => {
+        if (el.textContent.trim() === questions[currentQuestion].options[option]) {
+            el.classList.add("selected");
+        }
+    });
+
+    document.getElementById("next-btn").disabled = false;
+}
+
+function nextQuestion() {
+    // Simpan jawaban
+    answers[selectedOption]++;
+
+    // Cek jika ini adalah soal terakhir
+    if (currentQuestion === questions.length - 2) {
+        // Ubah teks tombol menjadi "Submit"
+        document.getElementById("next-btn").innerText = "Submit";
+    }
+
+    if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        showQuestion();
+        updateProgress();
+    } else {
+        showResults();
+    }
+}
+function updateProgress() {
+    const progress = ((currentQuestion + 1) / questions.length) * 100;
+    document.getElementById("progress").style.width = `${progress}%`;
+    document.getElementById("progressText").innerText = `${currentQuestion + 1}/${questions.length}`;
+}
+
+function showResults() {
+    document.getElementById("testContainer").classList.add("hidden");
+    document.getElementById("resultsContainer").classList.remove("hidden");
+
+    const totalA = answers.I + answers.E;
+    const totalB = answers.S + answers.N;
+    const totalC = answers.T + answers.F;
+    const totalD = answers.J + answers.P;
+
+    const percentI = totalA ? ((answers.I / totalA) * 100).toFixed(0) : 0;
+    const percentE = totalA ? ((answers.E / totalA) * 100).toFixed(0) : 0;
+
+    const percentS = totalB ? ((answers.S / totalB) * 100).toFixed(0) : 0;
+    const percentN = totalB ? ((answers.N / totalB) * 100).toFixed(0) : 0;
+
+    const percentT = totalC ? ((answers.T / totalC) * 100).toFixed(0) : 0;
+    const percentF = totalC ? ((answers.F / totalC) * 100).toFixed(0) : 0;
+
+    const percentJ = totalD ? ((answers.J / totalD) * 100).toFixed(0) : 0;
+    const percentP = totalD ? ((answers.P / totalD) * 100).toFixed(0) : 0;
+
+    // Set bar widths and display percentages
+    document.getElementById("barI").style.width = percentI + "%";
+    document.getElementById("percentI").innerText = percentI + "%";
+    document.getElementById("barE").style.width = percentE + "%";
+    document.getElementById("percentE").innerText = percentE + "%";
+
+    document.getElementById("barS").style.width = percentS + "%";
+    document.getElementById("percentS").innerText = percentS + "%";
+    document.getElementById("barN").style.width = percentN + "%";
+    document.getElementById("percentN").innerText = percentN + "%";
+
+    document.getElementById("barT").style.width = percentT + "%";
+    document.getElementById("percentT").innerText = percentT + "%";
+    document.getElementById("barF").style.width = percentF + "%";
+    document.getElementById("percentF").innerText = percentF + "%";
+
+    document.getElementById("barJ").style.width = percentJ + "%";
+    document.getElementById("percentJ").innerText = percentJ + "%";
+    document.getElementById("barP").style.width = percentP + "%";
+    document.getElementById("percentP").innerText = percentP + "%";
+
+    // Determine personality type
+    let type = "";
+    type += answers.I > answers.E ? "I" : "E";
+    type += answers.S > answers.N ? "N" : "S";
+    type += answers.T > answers.F ? "T" : "F";
+    type += answers.J > answers.P ? "J" : "P";
+
+    // Determine personality description
+    let description = "";
+    switch (type) {
+        case "ISTJ":
+            description =
+                "Orang dengan kepribadian ini cenderung teratur, bertanggung jawab, dan dapat diandalkan. Mereka menghargai tradisi dan mematuhi aturan. Dengan demikian mereka sangat cocok menjadi akuntan, auditor, manajer proyek, pengacara, pengawas, dan profesi sejenis lainnya.";
+            break;
+        case "ISFJ":
+            description =
+                "Mereka adalah pribadi yang penyayang dan peduli, selalu siap membantu orang lain dan menjaga hubungan yang harmonis. Dengan demikian mereka sangat cocok menjadi perawat, konselor, pendidik, pekerja sosial, administrator, dan profesi sejenis lainnya.";
+            break;
+        case "INFJ":
+            description =
+                "Individu ini sering dianggap sebagai idealis yang sangat berkomitmen terhadap nilai-nilai mereka dan berfokus pada masa depan yang lebih baik. Dengan demikian mereka sangat cocok menjadi penulis, psikolog, aktivis, penasihat, perencana strategi, dan profesi sejenis lainnya.";
+            break;
+        case "INTJ":
+            description =
+                "Tipe ini dikenal karena kemampuan mereka dalam merencanakan dan menganalisis, serta cenderung memiliki visi jangka panjang yang jelas. Dengan demikian mereka sangat cocok menjadi arsitek, ilmuwan, insinyur, pengusaha, manajer, dan profesi sejenis lainnya.";
+            break;
+        case "ISTP":
+            description =
+                "Orang dengan tipe ini sangat terampil dalam memecahkan masalah secara langsung dan efektif, sering kali menikmati aktivitas yang memerlukan keterampilan fisik. Dengan demikian mereka sangat cocok menjadi teknisi, mekanik, pilot, ahli mesin, perancang produk, dan profesi sejenis lainnya.";
+            break;
+        case "ISFP":
+            description =
+                "Tipe ini cenderung memiliki rasa estetika yang tinggi dan sering kali mengungkapkan diri mereka melalui seni dan kegiatan kreatif. Dengan demikian mereka sangat cocok menjadi desainer grafis, seniman, fotografer, penulis kreatif, musisi, dan profesi sejenis lainnya.";
+            break;
+        case "INFP":
+            description =
+                "Individu ini sering kali didorong oleh nilai-nilai pribadi yang mendalam dan memiliki keinginan kuat untuk membantu orang lain serta mencapai tujuan mulia. Dengan demikian mereka sangat cocok menjadi penulis, terapis, konselor, aktivis, guru, dan profesi sejenis lainnya.";
+            break;
+        case "INTP":
+            description =
+                "Mereka adalah pemikir logis yang sangat analitis dan cenderung menikmati tantangan intelektual serta mengeksplorasi teori dan ide baru. Dengan demikian mereka sangat cocok menjadi ilmuwan, programmer, peneliti, analis data, filsuf, dan profesi sejenis lainnya ";
+            break;
+        case "ESTP":
+            description =
+                "Orang dengan tipe ini suka mengambil risiko dan mencari pengalaman baru, mereka seringkali energik dan langsung dalam pendekatan mereka. Dengan demikian mereka sangat cocok menjadi pengusaha, atlet, sales, penyelamat, pilot, dan profesi sejenis lainnya.";
+            break;
+        case "ESFP":
+            description =
+                "Tipe ini cenderung sangat sosial dan ceria, menikmati momen-momen kehidupan dan sering kali menjadi pusat perhatian di lingkungan sosial mereka. Dengan demikian mereka sangat cocok menjadi entertainer, promotor acara, perawat, guru, pelatih kebugaran, dan profesi sejenis lainnya.";
+            break;
+        case "ENFP":
+            description =
+                "Individu ini dikenal karena semangat dan energi mereka, seringkali memotivasi dan menginspirasi orang lain dengan ide-ide kreatif mereka. Dengan demikian mereka sangat cocok menjadi pengusaha, penulis, konselor, pelatih, spesialis pemasaran, dan profesi sejenis lainnya.";
+            break;
+        case "ENTP":
+            description =
+                "Tipe ini sangat kreatif dan suka berinovasi, mereka cenderung mencari cara-cara baru untuk memecahkan masalah dan menghadapi tantangan. Dengan demikian mereka sangat cocok menjadi pengusaha, inventor, konsultan, ahli strategi, penulis, dan profesi sejenis lainnya.";
+            break;
+        case "ESTJ":
+            description =
+                "Mereka adalah pemimpin alami yang terorganisir dan efisien, seringkali menetapkan standar tinggi dan menghargai struktur serta disiplin. Dengan demikian mereka sangat cocok menjadi manajer, administrator, pengawas, pejabat pemerintah, pengacara, dan profesi sejenis lainnya.";
+            break;
+        case "ESFJ":
+            description =
+                "Tipe ini dikenal karena kemampuan mereka untuk merawat dan memelihara hubungan sosial, serta kepedulian mereka terhadap kebutuhan orang lain. Dengan demikian mereka sangat cocok menjadi perawat, guru, konselor, manajer acara, penghubung komunitas, dan profesi sejenis lainnya.";
+            break;
+        case "ENFJ":
+            description =
+                "Orang dengan tipe ini sering memiliki kemampuan alami untuk mempengaruhi dan memotivasi orang lain, serta memimpin dengan empati dan visi. Dengan demikian mereka sangat cocok menjadi pemimpin organisasi, pelatih, konselor, pengacara, diplomat, dan profesi sejenis lainnya.";
+            break;
+        case "ENTJ":
+            description =
+                "Mereka adalah perencana strategis yang efisien dan berani mengambil keputusan, seringkali memiliki visi yang jelas dan kemampuan untuk memimpin dengan tegas. Dengan demikian mereka sangat cocok menjadi eksekutif, pengusaha, manajer, pengacara, penasihat bisnis, dan profesi sejenis lainnya.";
+            break;
+        default:
+            description = "Tidak diketahui";
+            break;
+    }
+
+    // Display personality type and description
+    document.getElementById("yourType").innerHTML = `<span class="type">${type}</span><br><span class="description">${description}</span>`;
+}
+
+function resetQuiz() {
+    currentQuestion = 0;
+    selectedOption = null;
+    answers = { I: 0, E: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+    document.getElementById("resultsContainer").classList.add("hidden");
+    document.getElementById("startContainer").classList.remove("hidden");
+
+    // Reset teks tombol "Submit" ke "Next"
+    const nextBtn = document.getElementById("next-btn");
+    nextBtn.innerText = "Next";
+    nextBtn.disabled = true; // Disable tombol Next hingga pengguna memilih opsi pertama
+}
+    
+</script>
+</body>
+</html>

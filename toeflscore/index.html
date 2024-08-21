@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Skor TOEFL</title>
+<style>
+@import url("https://fonts.cdnfonts.com/css/euclid-circular-a");
+body {
+    font-family: 'Euclid Circular A', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.container{
+    margin: 15px;
+    padding: 20px 20px 40px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    text-align: center;
+    border-bottom: 3px solid #222;
+    padding: 0 0 15px;
+}
+
+.section{
+    display: grid;
+    grid-template-columns: 5fr 1fr;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 5px;
+    box-sizing: border-box;
+}
+
+label {
+    font-size: 18px;
+    margin-top: 10px;
+    color: #555;
+}
+
+select {
+    width: 70px;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    text-align: center;
+}
+
+button {
+    padding: 15px 20px;
+    margin: 10px 0 0;
+    width: 100%;
+    font-size: 18px;
+    color: #fff;
+    background-color: #24a0ed;
+    border: none;
+    border-radius: 35px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1970a6;
+}
+
+p#result {
+    display: none;
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 0px;
+    padding: 30px 10px 20px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #eeecef;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+}
+.totalScore{
+    color: #30ac35;
+    font-weight: bold;
+    font-size: 4em;
+    line-height: 100px;
+}
+</style>
+
+</head>
+<body>
+<div class="container">
+    <h1>Kalkulator Skor TOEFL</h1>
+
+    <div class="section">
+        <label for="listening">Listening section (0-50):</label>
+        <select id="listening"></select>
+
+        <label for="structure">Structure section (0-40):</label>
+        <select id="structure"></select>
+
+        <label for="reading">Reading section (0-50):</label>
+        <select id="reading"></select>
+    </div>
+    <button onclick="calculateTOEFL()">Hitung Skor TOEFL</button>
+
+    <p id="result"></p>
+</div>
+<script>
+// Fungsi untuk mengisi opsi dari 0 hingga maxValue
+function populateOptions(selectElement, maxValue) {
+    for (let i = 0; i <= maxValue; i++) {
+        let option = document.createElement("option");
+        option.value = i;
+        option.text = i;
+        selectElement.appendChild(option);
+    }
+}
+
+// Mengisi opsi select element
+populateOptions(document.getElementById("listening"), 50);
+populateOptions(document.getElementById("structure"), 40);
+populateOptions(document.getElementById("reading"), 50);
+
+// Score Table yang telah dibuat sebelumnya
+const scoreTable = {
+    50: { listening: 68, structure: null, reading: 67 },
+    49: { listening: 67, structure: null, reading: 66 },
+    48: { listening: 68, structure: null, reading: 67 },
+    47: { listening: 65, structure: null, reading: 63 },
+    46: { listening: 63, structure: null, reading: 61 },
+    45: { listening: 62, structure: null, reading: 60 },
+    44: { listening: 61, structure: null, reading: 59 },
+    43: { listening: 60, structure: null, reading: 58 },
+    42: { listening: 59, structure: null, reading: 57 },
+    41: { listening: 58, structure: null, reading: 56 },
+    40: { listening: 57, structure: 68, reading: 55 },
+    39: { listening: 57, structure: 67, reading: 54 },
+    38: { listening: 56, structure: 65, reading: 54 },
+    37: { listening: 55, structure: 53, reading: 53 },
+    36: { listening: 54, structure: 61, reading: 52 },
+    35: { listening: 54, structure: 60, reading: 52 },
+    34: { listening: 53, structure: 58, reading: 51 },
+    33: { listening: 52, structure: 57, reading: 50 },
+    32: { listening: 52, structure: 56, reading: 49 },
+    31: { listening: 51, structure: 55, reading: 48 },
+    30: { listening: 51, structure: 54, reading: 48 },
+    29: { listening: 50, structure: 53, reading: 47 },
+    28: { listening: 49, structure: 52, reading: 46 },
+    27: { listening: 49, structure: 51, reading: 46 },
+    26: { listening: 48, structure: 50, reading: 45 },
+    25: { listening: 48, structure: 49, reading: 44 },
+    24: { listening: 47, structure: 48, reading: 43 },
+    23: { listening: 47, structure: 47, reading: 43 },
+    22: { listening: 46, structure: 46, reading: 42 },
+    21: { listening: 45, structure: 45, reading: 41 },
+    20: { listening: 45, structure: 44, reading: 40 },
+    19: { listening: 44, structure: 43, reading: 39 },
+    18: { listening: 43, structure: 42, reading: 38 },
+    17: { listening: 42, structure: 41, reading: 37 },
+    16: { listening: 41, structure: 40, reading: 36 },
+    15: { listening: 41, structure: 40, reading: 35 },
+    14: { listening: 39, structure: 38, reading: 34 },
+    13: { listening: 38, structure: 37, reading: 32 },
+    12: { listening: 37, structure: 36, reading: 31 },
+    11: { listening: 35, structure: 35, reading: 30 },
+    10: { listening: 33, structure: 33, reading: 29 },
+    9: { listening: 32, structure: 31, reading: 28 },
+    8: { listening: 32, structure: 29, reading: 28 },
+    7: { listening: 31, structure: 27, reading: 27 },
+    6: { listening: 30, structure: 26, reading: 26 },
+    5: { listening: 29, structure: 25, reading: 25 },
+    4: { listening: 28, structure: 23, reading: 24 },
+    3: { listening: 27, structure: 22, reading: 23 },
+    2: { listening: 26, structure: 21, reading: 23 },
+    1: { listening: 25, structure: 20, reading: 22 },
+    0: { listening: 24, structure: 20, reading: 21 },
+};
+
+// Fungsi untuk menghitung skor TOEFL
+function calculateTOEFL() {
+    const listeningScore = parseInt(document.getElementById("listening").value);
+    const structureScore = parseInt(document.getElementById("structure").value);
+    const readingScore = parseInt(document.getElementById("reading").value);
+
+    const listeningConverted = scoreTable[listeningScore].listening;
+    const structureConverted = scoreTable[structureScore].structure;
+    const readingConverted = scoreTable[readingScore].reading;
+
+    const totalScore = Math.round(((listeningConverted + structureConverted + readingConverted) * 10) / 3);
+
+    const resultElement = document.getElementById("result");
+
+    resultElement.innerHTML = `Your TOEFL Score <br><span class="totalScore">${totalScore}</span>`;
+
+    resultElement.style.display = "block"; // Tampilkan hasil setelah kalkulasi
+}
+
+</script>
+</body>
+</html>

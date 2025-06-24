@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bulk File Renamer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      padding: 40px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #2c3e50;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: 600;
+    }
+
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus, input[type="file"]:focus {
+      border-color: #3498db;
+      outline: none;
+    }
+
+    .pattern-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .pattern-group input {
+      flex: 1;
+    }
+
+    .pattern-group span {
+      align-self: center;
+      font-weight: bold;
+      margin: 0 0 20px 0; /* perubahanmu */
+    }
+
+    .option label {
+      display: flex;
+      align-items: center;
+      gap: 3px; /* jarak antara checkbox dan teks */
+      font-size: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover:enabled {
+      background: #2980b9;
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    ul {
+      margin-top: 20px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bulk File Renamer</h1>
+
+  <label for="fileInput">Upload Files</label>
+  <input type="file" id="fileInput" multiple>
+
+  <label>Pola Rename</label>
+  <div class="pattern-group">
+    <input type="text" id="prefix" placeholder="Front (ex: IMG_)">
+    <span>{{num}}</span>
+    <input type="text" id="suffix" placeholder="Back (ex: _v1)">
+  </div>
+
+  <div class="option">
+    <label>
+      <input type="checkbox" id="autoTrim" checked>
+      <b>Auto Trim Pola (Hapus spasi depan/belakang)</b>
+    </label>
+  </div>
+
+  <button id="previewBtn">Preview</button>
+  <button id="downloadBtn" disabled>Download ZIP</button>
+
+  <h3>Preview:</h3>
+  <ul id="previewList"></ul>
+
+  <footer>Made with ❤️ by Tatang Aditya</footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

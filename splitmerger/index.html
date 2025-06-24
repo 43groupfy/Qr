@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PDF Split & Merge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --gray: #e5e7eb;
+  --gray-dark: #6b7280;
+  --text: #111827;
+  --bg: #f9fafb;
+  --white: #ffffff;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+}
+
+.tabs {
+  display: flex;
+  border: 1px solid var(--gray);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--white);
+  transition: background 0.2s, color 0.2s;
+}
+
+.tab.active {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.tab:not(.active):hover {
+  background: var(--gray);
+}
+
+.tab-content {
+  display: none;
+  background: var(--white);
+  border: 1px solid var(--gray);
+  border-radius: 8px;
+  padding: 25px;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin: 20px 0 8px;
+}
+
+input[type="file"] {
+  display: block;
+}
+
+.option-group {
+  margin-top: 15px;
+}
+
+.option-group input[type="radio"] {
+  margin-right: 6px;
+}
+
+.option-group input[type="text"],
+.option-group input[type="number"] {
+  margin-top: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--gray);
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+#page-count {
+  margin-top: 10px;
+  font-weight: 500;
+  color: var(--gray-dark);
+}
+
+#split-warning {
+  margin-top: 5px;
+  font-size: 0.9rem;
+  color: red;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.input-group input[type="text"] {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--gray);
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  font-size: 1rem;
+}
+
+.input-group select {
+  border: 1px solid var(--gray);
+  border-left: none;
+  border-right: none;
+  padding: 10px 12px;
+  font-size: 1rem;
+  background: var(--white);
+}
+
+.input-group .suffix {
+  background: var(--gray);
+  padding: 10px 14px;
+  border: 1px solid var(--gray);
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  font-weight: 600;
+}
+
+button {
+  margin-top: 25px;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: var(--primary-hover);
+}
+
+@media (max-width: 00px) {
+  body {
+    margin: 20px;
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .input-group input[type="text"],
+  .input-group select,
+  .input-group .suffix {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid var(--gray);
+    margin: 5px 0;
+  }
+
+  .input-group input[type="text"] {
+    border-radius: 6px;
+    border-right: 1px solid var(--gray);
+  }
+
+  .input-group select {
+    border-radius: 6px;
+  }
+
+  .input-group .suffix {
+    border-radius: 6px;
+    background: var(--gray);
+  }
+}
+
+  </style>
+</head>
+<body>
+    <h1>PDF Split & Merge</h1>
+  
+    <div class="tabs">
+      <div class="tab active" data-tab="split">Split PDF</div>
+      <div class="tab" data-tab="merge">Merge PDF</div>
+    </div>
+  
+<!-- SPLIT TAB -->
+<div id="split" class="tab-content active">
+    <label>Select PDF to Split:</label>
+    <input type="file" id="split-pdf-file" accept="application/pdf" onchange="loadPageCount()">
+    <div id="page-count" style="margin: 10px 0; font-weight: 500;"></div>
+    <div id="split-warning" style="color: red; font-size: 0.9rem;"></div>
+  
+    <div class="option-group">
+      <input type="radio" name="split-mode" value="custom" checked> Custom Range (e.g. 1-3,5,7-10)<br>
+      <input type="text" id="custom-range" placeholder="1-3,5,7-10" oninput="validateCustomRange()">
+    </div>
+  
+    <div class="option-group">
+      <input type="radio" name="split-mode" value="fixed"> Fixed Range (split every X pages)<br>
+      <input type="number" id="fixed-range" placeholder="5">
+    </div>
+  
+    <label>Output file name:</label>
+    <div class="input-group">
+      <input type="text" id="split-filename-base" value="split">
+      <select id="split-token">
+        <option value="range">range</option>
+        <option value="order">order</option>
+      </select>
+      <span class="suffix">.pdf</span>
+    </div>
+  
+    <button onclick="splitPDF()">Split PDF</button>
+  </div>
+  
+  
+    <!-- MERGE TAB -->
+    <div id="merge" class="tab-content">
+      <label>Select PDF files to Merge:</label>
+      <input type="file" id="merge-pdf-files" accept="application/pdf" multiple>
+  
+      <label>Output file name:</label>
+      <div class="input-group">
+        <input type="text" id="merge-filename" value="merged">
+        <span class="suffix">.pdf</span>
+      </div>
+  
+      <button onclick="mergePDF()">Merge PDF</button>
+    </div>
+  
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="script.js"></script>
+  
+    <script>
+      // Tabs switcher
+      const tabs = document.querySelectorAll('.tab');
+      const contents = document.querySelectorAll('.tab-content');
+  
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          contents.forEach(c => c.classList.remove('active'));
+          tab.classList.add('active');
+          document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+      });
+    </script>
+  </body>
+  
+</html>

@@ -16,6 +16,10 @@
   --white: #ffffff;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background: var(--bg);
@@ -115,11 +119,15 @@ input[type="file"] {
   display: flex;
   align-items: center;
   margin-top: 10px;
+  flex-wrap: nowrap;
+  width: 100%;
+  overflow: hidden;
 }
 
 .input-group input[type="text"] {
   flex: 1;
-  padding: 10px 12px;
+  min-width: 0;
+  padding: 10.8px 12px;
   border: 1px solid var(--gray);
   border-right: none;
   border-radius: 6px 0 0 6px;
@@ -128,11 +136,12 @@ input[type="file"] {
 
 .input-group select {
   border: 1px solid var(--gray);
-  border-left: none;
+  border-left: 1px solid var(--gray);
   border-right: none;
   padding: 10px 12px;
   font-size: 1rem;
   background: var(--white);
+  min-width: 50px;
 }
 
 .input-group .suffix {
@@ -142,6 +151,7 @@ input[type="file"] {
   border-left: none;
   border-radius: 0 6px 6px 0;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 button {
@@ -161,10 +171,10 @@ button:hover {
   background: var(--primary-hover);
 }
 
-@media (max-width: 00px) {
+@media (max-width: 600px) {
   body {
-    margin: 20px;
-    padding: 15px;
+    margin: 0 auto;
+    padding: 10px;
   }
 
   h1 {
@@ -172,34 +182,17 @@ button:hover {
   }
 
   .input-group {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
   }
 
   .input-group input[type="text"],
   .input-group select,
   .input-group .suffix {
-    width: 100%;
-    border-radius: 6px;
-    border: 1px solid var(--gray);
-    margin: 5px 0;
-  }
-
-  .input-group input[type="text"] {
-    border-radius: 6px;
-    border-right: 1px solid var(--gray);
-  }
-
-  .input-group select {
-    border-radius: 6px;
-  }
-
-  .input-group .suffix {
-    border-radius: 6px;
-    background: var(--gray);
+    font-size: 1rem;
   }
 }
-
   </style>
 </head>
 <body>

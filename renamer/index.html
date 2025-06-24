@@ -2,15 +2,19 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <title>Bulk File Renamer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced Bulk File Renamer</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    *{
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Inter', sans-serif;
       background: #f5f7fa;
       color: #333;
       padding: 40px;
-      max-width: 600px;
+      max-width: 800px;
       margin: auto;
     }
 
@@ -21,59 +25,133 @@
     }
 
     label {
-      display: block;
-      margin: 10px 0 5px;
       font-weight: 600;
+      margin: 0 10px 0 0;
     }
 
     input[type="text"], input[type="file"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
+      padding: 8px;
       border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 6px;
       box-sizing: border-box;
-      transition: border-color 0.3s;
     }
 
-    input[type="text"]:focus, input[type="file"]:focus {
-      border-color: #3498db;
-      outline: none;
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      cursor: pointer;
+      background: #ddd;
+      border-radius: 8px 8px 0 0;
+      margin-right: 2px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .tab.active {
+      background: #3498db;
+      color: #fff;
+    }
+
+    .tab-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     .pattern-group {
-      display: flex;
-      gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.pattern-group input.range {
+  flex: 1 1 150px;
+  order: 1;
+}
+
+.pattern-group input.prefix {
+  flex: 1 1 150px;
+  order: 2;
+}
+
+.pattern-group span {
+  order: 3;
+}
+
+.pattern-group input.suffix {
+  flex: 1 1 150px;
+  order: 4;
+}
+
+.pattern-group button.remove {
+  flex: 0 0 auto;
+  order: 5;
+}
+
+@media (max-width: 600px) {
+  .pattern-group input.range {
+    flex: 1 1 60%;
+    order: 1;
+  }
+
+  .pattern-group button.remove {
+    flex: 0 0 auto;
+    order: 2;
+  }
+
+  .pattern-group input.prefix {
+    flex: 1 1 45%;
+    order: 3;
+  }
+
+  .pattern-group span {
+    order: 4;
+  }
+
+  .pattern-group input.suffix {
+    flex: 1 1 45%;
+    order: 5;
+  }
+}
+
+    .option {
+      margin-top: 10px;
     }
 
-    .pattern-group input {
-      flex: 1;
+    .range-item {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 10px;
     }
 
-    .pattern-group span {
-      align-self: center;
-      font-weight: bold;
-      margin: 0 0 20px 0; /* perubahanmu */
-    }
-
-    .option label {
-      display: flex;
-      align-items: center;
-      gap: 3px; /* jarak antara checkbox dan teks */
-      font-size: 12px;
+    .range-item button {
+      background: #f56;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 5px 14px;
+      cursor: pointer;
+      font-size: 18px;
     }
 
     button {
-      width: 100%;
-      padding: 12px;
+      padding: 10px 20px;
       background: #3498db;
       color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 6px;
       cursor: pointer;
       transition: background 0.3s;
-      margin-top: 10px;
     }
 
     button:hover:enabled {
@@ -85,13 +163,21 @@
       cursor: not-allowed;
     }
 
-    ul {
+    table {
+      width: 100%;
+      border-collapse: collapse;
       margin-top: 20px;
-      padding-left: 20px;
     }
 
-    li {
-      margin-bottom: 5px;
+    table th, table td {
+      border: 1px solid #ddd;
+      padding: 6px;
+      text-align: left;
+    }
+
+    table th {
+      background: #3498db;
+      color: #fff;
     }
 
     footer {
@@ -103,32 +189,57 @@
   </style>
 </head>
 <body>
-  <h1>Bulk File Renamer</h1>
+  <h1>Advanced Bulk File Renamer</h1>
 
-  <label for="fileInput">Upload Files</label>
-  <input type="file" id="fileInput" multiple>
+  <label>Upload Files</label>
+  <input type="file" id="fileInput" multiple><br><br>
 
-  <label>Pola Rename</label>
-  <div class="pattern-group">
-    <input type="text" id="prefix" placeholder="Front (ex: IMG_)">
-    <span>{{num}}</span>
-    <input type="text" id="suffix" placeholder="Back (ex: _v1)">
+  <div class="tabs">
+    <div class="tab active" id="tabSingle">Single Pattern</div>
+    <div class="tab" id="tabCustom">Custom Ranges</div>
   </div>
 
-  <div class="option">
-    <label>
-      <input type="checkbox" id="autoTrim" checked>
-      <b>Auto Trim Pola (Hapus spasi depan/belakang)</b>
-    </label>
+  <div class="tab-content" id="singlePatternContent">
+    <div class="pattern-group">
+      <input type="text" id="prefix" class="prefix" placeholder="Front (ex: IMG_)">
+      <span>{{num}}</span>
+      <input type="text" id="suffix" class="suffix" placeholder="Back (ex: _v1)" style="display:none;">
+    </div>
+    <div class="option">
+      <label><input type="checkbox" id="enableSuffixSingle"> Gunakan Suffix</label>
+    </div>
+    <div class="option">
+      <label><input type="checkbox" id="autoTrim"> Auto Trim Pola</label>
+    </div>
   </div>
 
-  <button id="previewBtn">Preview</button>
+  <div class="tab-content" id="customPatternContent" style="display: none;">
+    <div id="rangeList"></div>
+    <button id="addRangeBtn" type="button">+ Add Range</button>
+    <div class="option">
+      <label><input type="checkbox" id="enableSuffixCustom"> Gunakan Suffix</label>
+    </div>
+    <div class="option">
+      <label><input type="checkbox" id="autoTrimCustom"> Auto Trim Pola</label>
+    </div>
+  </div>
+
+  <br>
   <button id="downloadBtn" disabled>Download ZIP</button>
 
   <h3>Preview:</h3>
-  <ul id="previewList"></ul>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Original Name</th>
+        <th>New Name</th>
+      </tr>
+    </thead>
+    <tbody id="previewList"></tbody>
+  </table>
 
-  <footer>Made with ❤️ by Tatang Aditya</footer>
+  <footer>Made with ❤️ by You</footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="script.js"></script>

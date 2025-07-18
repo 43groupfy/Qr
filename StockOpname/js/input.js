@@ -109,17 +109,58 @@ function deleteAsset() {
     }
 }
 
-// Fungsi untuk download barcode
+// Fungsi untuk download barcode (DIMODIFIKASI)
 function downloadBarcode() {
     const index = document.getElementById('edit-index').value;
     const asset = assets[index];
     
-    const link = document.createElement('a');
-    link.href = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(asset.id)}`;
-    link.download = `barcode-${asset.id}.png`;
-    link.click();
+    // Buat container untuk QR Code + Nama Barang
+    const container = document.createElement('div');
+    container.style.textAlign = 'center';
+    container.style.padding = '20px';
+    container.style.backgroundColor = 'white';
+    
+    // Tambahkan QR Code
+    const qrImg = document.createElement('img');
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(asset.id)}`;
+    qrImg.style.marginBottom = '10px';
+    container.appendChild(qrImg);
+    
+    // Tambahkan Nama Barang
+    const nameText = document.createElement('div');
+    nameText.textContent = asset.name;
+    nameText.style.fontWeight = 'bold';
+    nameText.style.fontSize = '16px';
+    nameText.style.marginTop = '10px';
+    container.appendChild(nameText);
+    
+    // Tambahkan ID Barang
+    const idText = document.createElement('div');
+    idText.textContent = `ID: ${asset.id}`;
+    idText.style.fontSize = '14px';
+    idText.style.marginTop = '5px';
+    container.appendChild(idText);
+    
+    // Sembunyikan sementara di dokumen
+    container.style.position = 'fixed';
+    container.style.left = '-9999px';
+    document.body.appendChild(container);
+    
+    // Gunakan html2canvas untuk menangkap sebagai gambar
+    html2canvas(container).then(canvas => {
+        // Konversi canvas ke URL gambar
+        const image = canvas.toDataURL('image/png');
+        
+        // Buat link download
+        const link = document.createElement('a');
+        link.href = image;
+        link.download = `barcode-${asset.id}.png`;
+        link.click();
+        
+        // Hapus container sementara
+        document.body.removeChild(container);
+    });
 }
-
 // Fungsi untuk menangani upload CSV
 function handleCSVUpload(event) {
     const file = event.target.files[0];

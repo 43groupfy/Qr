@@ -67,7 +67,9 @@ function createAssetCard(asset, index) {
     assetCard.className = 'asset-card';
     assetCard.innerHTML = `
         <h3>${asset.name}</h3>
-        <p>${asset.category} • ${asset.condition} • ${asset.status}  • ${asset.location}</p>
+        <p>${asset.category} • ${asset.status}</p>
+        <p>Lokasi: ${asset.location}</p>
+        <p>Kondisi: ${asset.condition}</p>
         <p class="time">${new Date(asset.time).toLocaleString()}</p>
         <i class="fas fa-check-circle check-icon ${asset.checked ? (asset.condition === 'Baik' ? 'checked-good' : 'checked-warning') : ''}" 
            onclick="toggleAssetCheck(${index}, event)"></i>

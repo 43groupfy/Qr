@@ -47,7 +47,9 @@ function renderAssets() {
         assetCard.className = 'asset-card';
         assetCard.innerHTML = `
             <h3>${asset.name}</h3>
-            <p>${asset.category} • ${asset.condition} • ${asset.status}  • ${asset.location}</p>
+            <p>${asset.category} • ${asset.status}</p>
+            <p>Lokasi: ${asset.location}</p>
+            <p>Kondisi: ${asset.condition}</p>
             <p class="time">${new Date(asset.time).toLocaleString()}</p>
             <i class="fas fa-check-circle check-icon ${asset.checked ? (asset.condition === 'Baik' ? 'checked-good' : 'checked-warning') : ''}" 
                onclick="toggleAssetCheck(${index}, event)"></i>
@@ -107,58 +109,17 @@ function deleteAsset() {
     }
 }
 
-// Fungsi untuk download barcode (DIMODIFIKASI)
+// Fungsi untuk download barcode
 function downloadBarcode() {
     const index = document.getElementById('edit-index').value;
     const asset = assets[index];
     
-    // Buat container untuk QR Code + Nama Barang
-    const container = document.createElement('div');
-    container.style.textAlign = 'center';
-    container.style.padding = '20px';
-    container.style.backgroundColor = 'white';
-    
-    // Tambahkan QR Code
-    const qrImg = document.createElement('img');
-    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(asset.id)}`;
-    qrImg.style.marginBottom = '10px';
-    container.appendChild(qrImg);
-    
-    // Tambahkan Nama Barang
-    const nameText = document.createElement('div');
-    nameText.textContent = asset.name;
-    nameText.style.fontWeight = 'bold';
-    nameText.style.fontSize = '16px';
-    nameText.style.marginTop = '10px';
-    container.appendChild(nameText);
-    
-    // Tambahkan ID Barang
-    const idText = document.createElement('div');
-    idText.textContent = `ID: ${asset.id}`;
-    idText.style.fontSize = '14px';
-    idText.style.marginTop = '5px';
-    container.appendChild(idText);
-    
-    // Sembunyikan sementara di dokumen
-    container.style.position = 'fixed';
-    container.style.left = '-9999px';
-    document.body.appendChild(container);
-    
-    // Gunakan html2canvas untuk menangkap sebagai gambar
-    html2canvas(container).then(canvas => {
-        // Konversi canvas ke URL gambar
-        const image = canvas.toDataURL('image/png');
-        
-        // Buat link download
-        const link = document.createElement('a');
-        link.href = image;
-        link.download = `barcode-${asset.id}.png`;
-        link.click();
-        
-        // Hapus container sementara
-        document.body.removeChild(container);
-    });
+    const link = document.createElement('a');
+    link.href = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(asset.id)}`;
+    link.download = `barcode-${asset.id}.png`;
+    link.click();
 }
+
 // Fungsi untuk menangani upload CSV
 function handleCSVUpload(event) {
     const file = event.target.files[0];

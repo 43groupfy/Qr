@@ -5,8 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Opname Aset Tetap</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tambahkan di head atau sebelum penutup body -->
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
+<style>
+    /* Style untuk QR Code Container */
+.qr-code-container {
+    text-align: center;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin: 10px 0;
+}
+
+.qr-code-container img {
+    margin-bottom: 10px;
+}
+
+.qr-code-container .asset-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.qr-code-container .asset-id {
+    font-size: 14px;
+    margin-top: 5px;
+    color: #555;
+}
+</style>
 <body>
     <div class="container">
         <header>
@@ -14,13 +44,12 @@
         </header>
 
         <div class="tabs">
-            <button class="tab" onclick="openTab(event, 'input-tab')">Input Aset</button>
-            <button class="tab" onclick="openTab(event, 'list-tab')">List Barang</button>
-            <button class="tab active" onclick="openTab(event, 'opname-tab')">Stock Opname</button>
+            <button class="tab active" onclick="openTab(event, 'input-tab')">Input Aset</button>
+            <button class="tab" onclick="openTab(event, 'opname-tab')">Stock Opname</button>
         </div>
 
         <!-- Tab Input Aset -->
-        <div id="input-tab" class="tab-content">
+        <div id="input-tab" class="tab-content active">
             <h2>Input Data Aset</h2>
             <form id="asset-form">
                 <div class="form-group">
@@ -63,20 +92,15 @@
                     <i class="fas fa-file-upload"></i> Upload CSV
                 </label>
                 <input type="file" id="csv-upload" class="file-input" accept=".csv">
-            </div>
-        </div>
-
-        <!-- Tab List Barang -->
-        <div id="list-tab" class="tab-content">
-            <h2>Daftar Barang</h2>
-            
-            <div class="sort-buttons">
-                <button onclick="sortAssets('name')" class="btn-secondary">
-                    <i class="fas fa-sort-alpha-down"></i> Urutkan Nama
-                </button>
-                <button onclick="sortAssets('time')" class="btn-secondary">
-                    <i class="fas fa-sort-numeric-down"></i> Urutkan Waktu
-                </button>
+                
+                <div class="sort-buttons">
+                    <button onclick="sortAssets('name')" class="btn-secondary">
+                        <i class="fas fa-sort-alpha-down"></i> Urutkan Nama
+                    </button>
+                    <button onclick="sortAssets('time')" class="btn-secondary">
+                        <i class="fas fa-sort-numeric-down"></i> Urutkan Waktu
+                    </button>
+                </div>
             </div>
 
             <div id="assets-list" class="assets-grid">
@@ -85,7 +109,7 @@
         </div>
 
         <!-- Tab Stock Opname -->
-        <div id="opname-tab" class="tab-content active">
+        <div id="opname-tab" class="tab-content">
             <h2>Stock Opname</h2>
             <div class="form-group">
                 <label for="scan-input">Scan Barcode atau Masukkan ID Manual</label>
@@ -113,30 +137,29 @@
             <div class="opname-tabs">
                 <button class="opname-tab active" onclick="openOpnameTab(event, 'unchecked-tab')">Belum Dicek</button>
                 <button class="opname-tab" onclick="openOpnameTab(event, 'checked-tab')">Sudah Dicek</button>
-                <button id="toggle-sort-btn"><i class="fa fa-filter"></i></button>
             </div>
 
             <div id="unchecked-tab" class="opname-tab-content active">
-                <div class="sort-buttons" id="sort-buttons"> <!-- Tambah id -->
-                    <button onclick="sortAssets('name')" class="btn-secondary">
+                <div class="sort-buttons">
+                    <button onclick="sortUncheckedAssets('name')" class="btn-secondary">
                         <i class="fas fa-sort-alpha-down"></i> Urutkan Nama
                     </button>
-                    <button onclick="sortAssets('time')" class="btn-secondary">
+                    <button onclick="sortUncheckedAssets('time')" class="btn-secondary">
                         <i class="fas fa-sort-numeric-down"></i> Urutkan Waktu
                     </button>
                 </div>
-                                
+
                 <div id="unchecked-list" class="assets-grid">
-                    <!-- Konten aset -->
+                    <!-- Aset belum dicek akan ditampilkan di sini -->
                 </div>
             </div>
 
             <div id="checked-tab" class="opname-tab-content">
-                <div class="sort-buttons" id="sort-buttons"> <!-- Tambah id -->
-                    <button onclick="sortAssets('name')" class="btn-secondary">
+                <div class="sort-buttons">
+                    <button onclick="sortCheckedAssets('name')" class="btn-secondary">
                         <i class="fas fa-sort-alpha-down"></i> Urutkan Nama
                     </button>
-                    <button onclick="sortAssets('time')" class="btn-secondary">
+                    <button onclick="sortCheckedAssets('time')" class="btn-secondary">
                         <i class="fas fa-sort-numeric-down"></i> Urutkan Waktu
                     </button>
                 </div>
@@ -262,31 +285,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/input.js"></script>
+    <script src="js/input2.js"></script>
     <script src="js/stock2.js"></script>
-<style>
-    #sort-buttons {
-    display: none; /* Sembunyikan secara default */
-}
-
-#sort-buttons.visible {
-    display: block; /* Tampilkan saat class visible ada */
-}
-
-</style>
-<script>
-document.getElementById('toggle-sort-btn').addEventListener('click', function() {
-    const sortButtons = document.getElementById('sort-buttons');
-    sortButtons.style.display = sortButtons.style.display === 'none' ? 'block' : 'none';
-    
-    // Ganti icon filter ketika aktif/tidak
-    const icon = this.querySelector('i');
-    if (sortButtons.style.display === 'block') {
-        icon.classList.add('active-filter');
-    } else {
-        icon.classList.remove('active-filter');
-    }
-});
-</script>
 </body>
 </html>

@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Opname Aset Tetap</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<style>
+    :root {
+    --primary: #4a6bff;
+    --success: #2ecc71;
+    --warning: #f1c40f;
+    --danger: #e74c3c;
+    --light: #ffffff;
+    --dark: #2c3e50;
+    --gray: #7f8c8d;
+}
+
+/* Reset dan font */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 10px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+.tabs {
+    display: flex;
+    margin-bottom: 5px;
+    padding-bottom: 10px;
+    gap: 6px;
+}
+
+.tab {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #aeaeae;
+    border: none;
+    outline: none;
+    transition: 0.3s;
+    font-size: 14px;
+    border-radius: 8px 8px;
+    margin-right: 2px;
+    width: 100%;
+}
+
+.tab:hover {
+    background-color: #e2e2e2;
+}
+
+.tab.active {
+    background-color: var(--primary);
+    color: white;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+    background-color: white;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #fff;
+    transition: border-color 0.2s ease;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #3a5ae8;
+}
+
+.btn-success {
+    background-color: var(--success);
+}
+
+.btn-success:hover {
+    background-color: #27ae60;
+}
+
+.btn-warning {
+    background-color: var(--warning);
+    color: var(--dark);
+}
+
+.btn-warning:hover {
+    background-color: #d4ac0d;
+}
+
+.btn-danger {
+    background-color: var(--danger);
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+.btn-secondary {
+    background-color: var(--gray);
+}
+
+.btn-secondary:hover {
+    background-color: #5d6d7e;
+}
+
+.assets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.asset-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+    position: relative;
+    border: 3px solid var(--primary);
+}
+
+.asset-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+}
+
+.asset-card h3 {
+    margin-bottom: 6px;
+    color: var(--primary);
+    font-size: 18px;
+}
+
+.asset-card p {
+    color: var(--gray);
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.asset-card .check-icon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 20px;
+    color: var(--gray);
+    cursor: pointer;
+}
+
+.asset-card .check-icon.checked-good {
+    color: var(--success);
+}
+
+.asset-card .check-icon.checked-warning {
+    color: var(--warning);
+}
+
+.asset-card .time {
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 10px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 24px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+    color: var(--primary);
+}
+
+.close {
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--gray);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+.qr-code {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.qr-code img {
+    max-width: 200px;
+    height: auto;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.sort-buttons {
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.sort-buttons button{
+    font-size: 14px
+}
+ 
+
+.file-input {
+    display: none;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 10px 14px;
+    background-color: var(--gray);
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.file-label:hover {
+    background-color: #5a6268;
+}
+
+.scanner-container {
+    position: relative;
+    margin: 20px 0;
+}
+
+#scanner {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    border: 3px solid var(--primary);
+    border-radius: 8px;
+    display: none;
+    background-color: black;
+}
+
+#scan-canvas {
+    display: none;
+}
+
+.scanner-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+.scanner-frame {
+    width: 70%;
+    height: 70%;
+    border: 3px solid rgba(74, 107, 255, 0.5);
+    box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+    .assets-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+
+    .scanner-frame {
+        width: 90%;
+        height: 50%;
+    }
+}
+
+/* Tab Stock Opname */
+.opname-tabs {
+    display: flex;
+    margin: 20px 0 10px;
+    border-bottom: 0px solid #ddd;
+    gap: 6px;
+}
+
+.opname-tab {
+    width: 100%;
+    padding: 8px 15px;
+    cursor: pointer;
+    background-color: #dadada;
+    border: none;
+    outline: none;
+    transition: 0.3s;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
+.opname-tab:hover {
+    background-color: #ddd;
+}
+
+.opname-tab.active {
+    background-color: var(--primary);
+    color: white;
+}
+
+.opname-tab-content {
+    display: none;
+    padding: 10px 0;
+}
+
+.opname-tab-content.active {
+    display: block;
+}
+
+/* Buat video scanner tidak menampilkan latar hitam saat tidak aktif */
+#scanner {
+    background-color: transparent !important;
+    display: none;
+    z-index: 1;
+}
+
+/* Pastikan canvas tidak mengganggu tampilan saat tidak dipakai */
+#scan-canvas {
+    display: none !important;
+}
+
+/* Scanner overlay sebaiknya dimatikan saat tidak digunakan */
+.scanner-overlay {
+    display: none;
+}
+
+/* Scanner controls hanya muncul saat aktif */
+#scanner-controls {
+    display: none;
+}
+</style>
+<body>
+    <div class="container">
+        <header>
+            <h1>Stock Opname Aset Tetap</h1>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="openTab(event, 'input-tab')">Input Aset</button>
+            <button class="tab" onclick="openTab(event, 'list-tab')">List Barang</button>
+            <button class="tab" onclick="openTab(event, 'opname-tab')">Stock Opname</button>
+        </div>
+
+        <!-- Tab Input Aset -->
+        <div id="input-tab" class="tab-content active">
+            <h2>Input Data Aset</h2>
+            <form id="asset-form">
+                <div class="form-group">
+                    <label for="id">ID Aset</label>
+                    <input type="text" id="id" value="099125" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Nama Barang</label>
+                    <input type="text" id="name" value="Laptop Lenovo ThinkPad X1" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Lokasi</label>
+                    <input type="text" id="location" value="Kantor" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Kategori</label>
+                    <input type="text" id="category" value="Elektronik" required>
+                </div>
+                <div class="form-group">
+                    <label for="condition">Kondisi</label>
+                    <select id="condition" required>
+                        <option value="Baik">Baik</option>
+                        <option value="Rusak Ringan">Rusak Ringan</option>
+                        <option value="Rusak Berat">Rusak Berat</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" required>
+                        <option value="Tersedia">Tersedia</option>
+                        <option value="Dipinjam">Dipinjam</option>
+                        <option value="Dalam Perbaikan">Dalam Perbaikan</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-success">Input Barang</button>
+            </form>
+
+            <div class="action-buttons">
+                <label for="csv-upload" class="file-label">
+                    <i class="fas fa-file-upload"></i> Upload CSV
+                </label>
+                <input type="file" id="csv-upload" class="file-input" accept=".csv">
+            </div>
+        </div>
+
+        <!-- Tab List Barang -->
+        <div id="list-tab" class="tab-content">
+            <h2>Daftar Barang</h2>
+            
+            <div class="sort-buttons">
+                <button onclick="sortAssets('name')" class="btn-secondary">
+                    <i class="fas fa-sort-alpha-down"></i> Urutkan Nama
+                </button>
+                <button onclick="sortAssets('time')" class="btn-secondary">
+                    <i class="fas fa-sort-numeric-down"></i> Urutkan Waktu
+                </button>
+            </div>
+
+            <div id="assets-list" class="assets-grid">
+                <!-- Aset akan ditampilkan di sini -->
+            </div>
+        </div>
+
+        <!-- Tab Stock Opname -->
+        <div id="opname-tab" class="tab-content">
+            <h2>Stock Opname</h2>
+            <div class="form-group">
+                <label for="scan-input">Scan Barcode atau Masukkan ID Manual</label>
+                <input type="text" id="scan-input" placeholder="Scan barcode atau ketik ID aset">
+                <button onclick="startScanner()" class="btn-success" id="scanner-btn">
+                    <i class="fas fa-camera"></i> Buka Scanner
+                </button>
+            </div>
+
+            <div class="scanner-container">
+                <video id="scanner" playsinline></video>
+                <canvas id="scan-canvas"></canvas>
+                <div class="scanner-overlay">
+                    <div class="scanner-frame"></div>
+                </div>
+                <div class="scanner-controls" id="scanner-controls" style="display: none;">
+                    <button onclick="stopScanner()" class="btn-danger">
+                        <i class="fas fa-times"></i> Tutup Scanner
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="handleManualScan()" class="btn-success">Cari Aset</button>
+
+            <div class="opname-tabs">
+                <button class="opname-tab active" onclick="openOpnameTab(event, 'unchecked-tab')">Belum Dicek</button>
+                <button class="opname-tab" onclick="openOpnameTab(event, 'checked-tab')">Sudah Dicek</button>
+                <button id="toggle-sort-btn"><i class="fa fa-filter"></i></button>
+            </div>
+
+            <div id="unchecked-tab" class="opname-tab-content active">
+                <div class="sort-buttons" id="sort-buttons"> <!-- Tambah id -->
+                    <button onclick="sortAssets('name')" class="btn-secondary">
+                        <i class="fas fa-sort-alpha-down"></i> Urutkan Nama
+                    </button>
+                    <button onclick="sortAssets('time')" class="btn-secondary">
+                        <i class="fas fa-sort-numeric-down"></i> Urutkan Waktu
+                    </button>
+                </div>
+                                
+                <div id="unchecked-list" class="assets-grid">
+                    <!-- Konten aset -->
+                </div>
+            </div>
+
+            <div id="checked-tab" class="opname-tab-content">
+                <div class="sort-buttons" id="sort-buttons"> <!-- Tambah id -->
+                    <button onclick="sortAssets('name')" class="btn-secondary">
+                        <i class="fas fa-sort-alpha-down"></i> Urutkan Nama
+                    </button>
+                    <button onclick="sortAssets('time')" class="btn-secondary">
+                        <i class="fas fa-sort-numeric-down"></i> Urutkan Waktu
+                    </button>
+                </div>
+
+                <div id="checked-list" class="assets-grid">
+                    <!-- Aset sudah dicek akan ditampilkan di sini -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Aset -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Aset</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="edit-form">
+                <input type="hidden" id="edit-index">
+                <div class="form-group">
+                    <label for="edit-id">ID Aset</label>
+                    <input type="text" id="edit-id" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="edit-name">Nama Barang</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-location">Lokasi</label>
+                    <input type="text" id="edit-location" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-category">Kategori</label>
+                    <input type="text" id="edit-category" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-condition">Kondisi</label>
+                    <select id="edit-condition" required>
+                        <option value="Baik">Baik</option>
+                        <option value="Rusak Ringan">Rusak Ringan</option>
+                        <option value="Rusak Berat">Rusak Berat</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-status">Status</label>
+                    <select id="edit-status" required>
+                        <option value="Tersedia">Tersedia</option>
+                        <option value="Dipinjam">Dipinjam</option>
+                        <option value="Dalam Perbaikan">Dalam Perbaikan</option>
+                    </select>
+                </div>
+                <div class="qr-code" id="qr-container">
+                    <!-- QR Code akan ditampilkan di sini -->
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button onclick="downloadBarcode()" class="btn-secondary">
+                    <i class="fas fa-download"></i> Download Barcode
+                </button>
+                <button onclick="deleteAsset()" class="btn-danger">
+                    <i class="fas fa-trash"></i> Hapus Aset
+                </button>
+                <button onclick="saveEdit()" class="btn-success">
+                    <i class="fas fa-save"></i> Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Aset di Stock Opname -->
+    <div id="opname-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detail Aset</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="opname-form">
+                <input type="hidden" id="opname-index">
+                <div class="form-group">
+                    <label for="opname-id">ID Aset</label>
+                    <input type="text" id="opname-id" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="opname-name">Nama Barang</label>
+                    <input type="text" id="opname-name" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="opname-location">Lokasi</label>
+                    <input type="text" id="opname-location" required>
+                </div>
+                <div class="form-group">
+                    <label for="opname-category">Kategori</label>
+                    <input type="text" id="opname-category" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="opname-condition">Kondisi</label>
+                    <select id="opname-condition" required>
+                        <option value="Baik">Baik</option>
+                        <option value="Rusak Ringan">Rusak Ringan</option>
+                        <option value="Rusak Berat">Rusak Berat</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="opname-status">Status</label>
+                    <select id="opname-status" required>
+                        <option value="Tersedia">Tersedia</option>
+                        <option value="Dipinjam">Dipinjam</option>
+                        <option value="Dalam Perbaikan">Dalam Perbaikan</option>
+                    </select>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button id="toggle-check-btn" onclick="toggleOpnameCheck()" class="btn-warning">
+                    <i class="fas fa-check-circle"></i> Tandai Belum Dicek
+                </button>
+                <button onclick="saveOpnameEdit()" class="btn-success">
+                    <i class="fas fa-save"></i> Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script>
+        // Data aset
+let assets = [];
+
+// Fungsi untuk menyimpan ke localStorage
+function saveToLocal() {
+    localStorage.setItem('fixedAssets', JSON.stringify(assets));
+}
+
+// Fungsi untuk memuat dari localStorage
+function loadFromLocal() {
+    const saved = localStorage.getItem('fixedAssets');
+    if (saved) {
+        assets = JSON.parse(saved);
+    }
+}
+
+// Fungsi untuk membuka tab
+function openTab(evt, tabName) {
+    const tabContents = document.getElementsByClassName('tab-content');
+    for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove('active');
+    }
+    
+    const tabs = document.getElementsByClassName('tab');
+    for (let i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+    }
+    
+    document.getElementById(tabName).classList.add('active');
+    evt.currentTarget.classList.add('active');
+    
+    if (tabName === 'opname-tab') {
+        renderOpnameAssets();
+    }
+}
+
+// Fungsi untuk menutup modal
+function closeModal() {
+    document.getElementById('edit-modal').style.display = 'none';
+    document.getElementById('opname-modal').style.display = 'none';
+}
+
+// Fungsi untuk mengurutkan aset
+function sortAssets(by, isOpname = false) {
+    if (by === 'name') {
+        assets.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (by === 'time') {
+        assets.sort((a, b) => b.time - a.time);
+    }
+    
+    saveToLocal();
+    
+    if (isOpname) {
+        renderOpnameAssets();
+    } else {
+        renderAssets();
+    }
+}
+
+// Inisialisasi aplikasi saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    loadFromLocal();
+    renderAssets();
+});
+    </script>
+    <script>
+        // Fungsi untuk menambahkan aset baru
+function addAsset() {
+    const id = document.getElementById('id').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const location = document.getElementById('location').value.trim();
+    const category = document.getElementById('category').value.trim();
+    const condition = document.getElementById('condition').value;
+    const status = document.getElementById('status').value;
+    
+    // Cek apakah ID sudah ada
+    if (assets.some(asset => asset.id === id)) {
+        alert('ID aset sudah ada!');
+        return;
+    }
+    
+    const newAsset = {
+        id,
+        name,
+        location,
+        category,
+        condition,
+        status,
+        time: new Date().getTime(),
+        checked: false
+    };
+    
+    assets.push(newAsset);
+    saveToLocal();
+    renderAssets();
+    
+    // Reset form
+    document.getElementById('asset-form').reset();
+}
+
+// Fungsi untuk menampilkan aset dalam bentuk card
+function renderAssets() {
+    const assetsList = document.getElementById('assets-list');
+    assetsList.innerHTML = '';
+    
+    if (assets.length === 0) {
+        assetsList.innerHTML = '<p>Tidak ada aset yang tersedia.</p>';
+        return;
+    }
+    
+    assets.forEach((asset, index) => {
+        const assetCard = document.createElement('div');
+        assetCard.className = 'asset-card';
+        assetCard.innerHTML = `
+            <h3>${asset.name}</h3>
+            <p>${asset.category} • ${asset.condition} • ${asset.status}  • ${asset.location}</p>
+            <p class="time">${new Date(asset.time).toLocaleString()}</p>
+            <i class="fas fa-check-circle check-icon ${asset.checked ? (asset.condition === 'Baik' ? 'checked-good' : 'checked-warning') : ''}" 
+               onclick="toggleAssetCheck(${index}, event)"></i>
+        `;
+        
+        assetCard.addEventListener('click', function() {
+            showEditModal(index);
+        });
+        
+        assetsList.appendChild(assetCard);
+    });
+}
+
+// Fungsi untuk menampilkan modal edit
+function showEditModal(index) {
+    const asset = assets[index];
+    document.getElementById('edit-index').value = index;
+    document.getElementById('edit-id').value = asset.id;
+    document.getElementById('edit-name').value = asset.name;
+    document.getElementById('edit-location').value = asset.location;
+    document.getElementById('edit-category').value = asset.category;
+    document.getElementById('edit-condition').value = asset.condition;
+    document.getElementById('edit-status').value = asset.status;
+    
+    // Generate QR Code
+    const qrContainer = document.getElementById('qr-container');
+    qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(asset.id)}" alt="QR Code">`;
+    
+    document.getElementById('edit-modal').style.display = 'block';
+}
+
+// Fungsi untuk menyimpan edit
+function saveEdit() {
+    const index = document.getElementById('edit-index').value;
+    const asset = assets[index];
+    
+    asset.name = document.getElementById('edit-name').value.trim();
+    asset.location = document.getElementById('edit-location').value.trim();
+    asset.category = document.getElementById('edit-category').value.trim();
+    asset.condition = document.getElementById('edit-condition').value;
+    asset.status = document.getElementById('edit-status').value;
+    asset.time = new Date().getTime();
+    
+    saveToLocal();
+    renderAssets();
+    closeModal();
+}
+
+// Fungsi untuk menghapus aset
+function deleteAsset() {
+    const index = document.getElementById('edit-index').value;
+    if (confirm('Apakah Anda yakin ingin menghapus aset ini?')) {
+        assets.splice(index, 1);
+        saveToLocal();
+        renderAssets();
+        closeModal();
+    }
+}
+
+// Fungsi untuk download barcode (DIMODIFIKASI)
+function downloadBarcode() {
+    const index = document.getElementById('edit-index').value;
+    const asset = assets[index];
+    
+    // Buat container untuk QR Code + Nama Barang
+    const container = document.createElement('div');
+    container.style.textAlign = 'center';
+    container.style.padding = '20px';
+    container.style.backgroundColor = 'white';
+    
+    // Tambahkan QR Code
+    const qrImg = document.createElement('img');
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(asset.id)}`;
+    qrImg.style.marginBottom = '10px';
+    container.appendChild(qrImg);
+    
+    // Tambahkan Nama Barang
+    const nameText = document.createElement('div');
+    nameText.textContent = asset.name;
+    nameText.style.fontWeight = 'bold';
+    nameText.style.fontSize = '16px';
+    nameText.style.marginTop = '10px';
+    container.appendChild(nameText);
+    
+    // Tambahkan ID Barang
+    const idText = document.createElement('div');
+    idText.textContent = `ID: ${asset.id}`;
+    idText.style.fontSize = '14px';
+    idText.style.marginTop = '5px';
+    container.appendChild(idText);
+    
+    // Sembunyikan sementara di dokumen
+    container.style.position = 'fixed';
+    container.style.left = '-9999px';
+    document.body.appendChild(container);
+    
+    // Gunakan html2canvas untuk menangkap sebagai gambar
+    html2canvas(container).then(canvas => {
+        // Konversi canvas ke URL gambar
+        const image = canvas.toDataURL('image/png');
+        
+        // Buat link download
+        const link = document.createElement('a');
+        link.href = image;
+        link.download = `barcode-${asset.id}.png`;
+        link.click();
+        
+        // Hapus container sementara
+        document.body.removeChild(container);
+    });
+}
+// Fungsi untuk menangani upload CSV
+function handleCSVUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const contents = e.target.result;
+        const lines = contents.split('\n');
+        let addedCount = 0;
+        
+        for (let i = 1; i < lines.length; i++) { // Skip header
+            const line = lines[i].trim();
+            if (!line) continue;
+            
+            const [id, name, location, category, condition, status] = line.split(',');
+            
+            if (!id || !name || !location || !category || !condition || !status) {
+                console.warn(`Baris ${i} tidak valid: ${line}`);
+                continue;
+            }
+            
+            // Cek apakah ID sudah ada
+            if (assets.some(asset => asset.id === id.trim())) {
+                console.warn(`ID ${id} sudah ada, dilewati`);
+                continue;
+            }
+            
+            const newAsset = {
+                id: id.trim(),
+                name: name.trim(),
+                location: location.trim(),
+                category: category.trim(),
+                condition: condition.trim(),
+                status: status.trim(),
+                time: new Date().getTime(),
+                checked: false
+            };
+            
+            assets.push(newAsset);
+            addedCount++;
+        }
+        
+        saveToLocal();
+        renderAssets();
+        alert(`Berhasil menambahkan ${addedCount} aset dari CSV`);
+        
+        // Reset input file
+        event.target.value = '';
+    };
+    
+    reader.readAsText(file);
+}
+
+// Event listener untuk form input aset
+document.getElementById('asset-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    addAsset();
+});
+
+// Event listener untuk upload CSV
+document.getElementById('csv-upload').addEventListener('change', handleCSVUpload);
+
+    </script>
+    <script>
+       let scannerActive = false;
+let videoStream = null;
+
+// Fungsi untuk membuka tab di stock opname
+function openOpnameTab(evt, tabName) {
+    const tabContents = document.getElementsByClassName('opname-tab-content');
+    for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove('active');
+    }
+    
+    const tabs = document.getElementsByClassName('opname-tab');
+    for (let i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+    }
+    
+    document.getElementById(tabName).classList.add('active');
+    evt.currentTarget.classList.add('active');
+}
+
+// Fungsi untuk menampilkan aset di tab opname
+function renderOpnameAssets() {
+    renderUncheckedAssets();
+    renderCheckedAssets();
+}
+
+// Fungsi untuk menampilkan aset belum dicek
+function renderUncheckedAssets() {
+    const uncheckedList = document.getElementById('unchecked-list');
+    uncheckedList.innerHTML = '';
+    
+    const uncheckedAssets = assets.filter(asset => !asset.checked);
+    
+    if (uncheckedAssets.length === 0) {
+        uncheckedList.innerHTML = '<p>Tidak ada aset yang belum dicek.</p>';
+        return;
+    }
+    
+    uncheckedAssets.forEach((asset, index) => {
+        const originalIndex = assets.findIndex(a => a.id === asset.id);
+        const assetCard = createAssetCard(asset, originalIndex);
+        uncheckedList.appendChild(assetCard);
+    });
+}
+
+// Fungsi untuk menampilkan aset sudah dicek
+function renderCheckedAssets() {
+    const checkedList = document.getElementById('checked-list');
+    checkedList.innerHTML = '';
+    
+    const checkedAssets = assets.filter(asset => asset.checked);
+    
+    if (checkedAssets.length === 0) {
+        checkedList.innerHTML = '<p>Tidak ada aset yang sudah dicek.</p>';
+        return;
+    }
+    
+    checkedAssets.forEach((asset, index) => {
+        const originalIndex = assets.findIndex(a => a.id === asset.id);
+        const assetCard = createAssetCard(asset, originalIndex);
+        checkedList.appendChild(assetCard);
+    });
+}
+
+// Fungsi untuk membuat card aset
+function createAssetCard(asset, index) {
+    const assetCard = document.createElement('div');
+    assetCard.className = 'asset-card';
+    assetCard.innerHTML = `
+        <h3>${asset.name}</h3>
+        <p>${asset.category} • ${asset.condition} • ${asset.status}  • ${asset.location}</p>
+        <p class="time">${new Date(asset.time).toLocaleString()}</p>
+        <i class="fas fa-check-circle check-icon ${asset.checked ? (asset.condition === 'Baik' ? 'checked-good' : 'checked-warning') : ''}" 
+           onclick="toggleAssetCheck(${index}, event)"></i>
+    `;
+    
+    assetCard.addEventListener('click', function() {
+        showOpnameModal(index);
+    });
+    
+    return assetCard;
+}
+
+// Fungsi untuk toggle check/uncheck (DIMODIFIKASI)
+function toggleAssetCheck(index, event) {
+    if (event) event.stopPropagation();
+    
+    const asset = assets[index];
+    asset.checked = !asset.checked;
+    asset.time = new Date().getTime();
+    
+    saveToLocal();
+    
+    // Pindah tab otomatis berdasarkan status terbaru
+    if (asset.checked) {
+        // Jika di-check, pindah ke tab Sudah Dicek
+        document.querySelector('.opname-tab[onclick*="checked-tab"]').click();
+    } else {
+        // Jika di-uncheck, pindah ke tab Belum Dicek
+        document.querySelector('.opname-tab[onclick*="unchecked-tab"]').click();
+    }
+    
+    // Render ulang list yang sesuai
+    renderOpnameAssets();
+}
+
+// Fungsi untuk mengurutkan aset belum dicek
+function sortUncheckedAssets(by) {
+    const uncheckedAssets = assets.filter(asset => !asset.checked);
+    
+    if (by === 'name') {
+        uncheckedAssets.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (by === 'time') {
+        uncheckedAssets.sort((a, b) => b.time - a.time);
+    }
+    
+    // Update array utama dengan urutan baru
+    let newAssets = assets.filter(asset => asset.checked);
+    newAssets = [...uncheckedAssets, ...newAssets];
+    assets = newAssets;
+    
+    saveToLocal();
+    renderUncheckedAssets();
+}
+
+// Fungsi untuk mengurutkan aset sudah dicek
+function sortCheckedAssets(by) {
+    const checkedAssets = assets.filter(asset => asset.checked);
+    
+    if (by === 'name') {
+        checkedAssets.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (by === 'time') {
+        checkedAssets.sort((a, b) => b.time - a.time);
+    }
+    
+    // Update array utama dengan urutan baru
+    let newAssets = assets.filter(asset => !asset.checked);
+    newAssets = [...newAssets, ...checkedAssets];
+    assets = newAssets;
+    
+    saveToLocal();
+    renderCheckedAssets();
+}
+
+// Fungsi untuk menampilkan modal opname
+function showOpnameModal(index) {
+    const asset = assets[index];
+    document.getElementById('opname-index').value = index;
+    document.getElementById('opname-id').value = asset.id;
+    document.getElementById('opname-name').value = asset.name;
+    document.getElementById('opname-location').value = asset.location;
+    document.getElementById('opname-category').value = asset.category;
+    document.getElementById('opname-condition').value = asset.condition;
+    document.getElementById('opname-status').value = asset.status;
+    
+    // Update tombol check/uncheck
+    const toggleBtn = document.getElementById('toggle-check-btn');
+    if (asset.checked) {
+        toggleBtn.innerHTML = '<i class="fas fa-check-circle"></i> Tandai Belum Dicek';
+        toggleBtn.className = 'btn-warning';
+    } else {
+        toggleBtn.innerHTML = '<i class="fas fa-check-circle"></i> Tandai Sudah Dicek';
+        toggleBtn.className = 'btn-success';
+    }
+    
+    document.getElementById('opname-modal').style.display = 'block';
+}
+
+// Fungsi untuk toggle check di modal opname (DIMODIFIKASI)
+function toggleOpnameCheck() {
+    const index = document.getElementById('opname-index').value;
+    const asset = assets[index];
+    asset.checked = !asset.checked;
+    asset.time = new Date().getTime();
+    
+    saveToLocal();
+    
+    // Update tombol
+    const toggleBtn = document.getElementById('toggle-check-btn');
+    if (asset.checked) {
+        toggleBtn.innerHTML = '<i class="fas fa-check-circle"></i> Tandai Belum Dicek';
+        toggleBtn.className = 'btn-warning';
+    } else {
+        toggleBtn.innerHTML = '<i class="fas fa-check-circle"></i> Tandai Sudah Dicek';
+        toggleBtn.className = 'btn-success';
+    }
+    
+    // Tutup modal
+    closeModal();
+    
+    // Pindah tab otomatis setelah modal tertutup
+    setTimeout(() => {
+        if (asset.checked) {
+            document.querySelector('.opname-tab[onclick*="checked-tab"]').click();
+        } else {
+            document.querySelector('.opname-tab[onclick*="unchecked-tab"]').click();
+        }
+    }, 300);
+    
+    // Perbarui tampilan
+    renderOpnameAssets();
+}
+
+// Fungsi untuk menyimpan edit di opname
+function saveOpnameEdit() {
+    const index = document.getElementById('opname-index').value;
+    const asset = assets[index];
+    
+    asset.location = document.getElementById('opname-location').value.trim();
+    asset.condition = document.getElementById('opname-condition').value;
+    asset.status = document.getElementById('opname-status').value;
+    asset.time = new Date().getTime();
+    
+    saveToLocal();
+    renderOpnameAssets();
+    closeModal();
+}
+
+// Fungsi untuk menangani scan manual
+function handleManualScan() {
+    const scanInput = document.getElementById('scan-input');
+    const id = scanInput.value.trim();
+    
+    if (!id) return;
+    
+    const index = assets.findIndex(asset => asset.id === id);
+    if (index !== -1) {
+        // Tandai sebagai checked dan update waktu
+        assets[index].checked = true;
+        assets[index].time = new Date().getTime();
+        saveToLocal();
+        
+        // Tampilkan modal edit
+        showOpnameModal(index);
+        
+        // Reset input
+        scanInput.value = '';
+        
+        // Pindah ke tab Sudah Dicek
+        setTimeout(() => {
+            document.querySelector('.opname-tab[onclick*="checked-tab"]').click();
+        }, 300);
+        
+        // Render ulang
+        renderOpnameAssets();
+    } else {
+        alert('Aset dengan ID tersebut tidak ditemukan!');
+    }
+}
+
+// Fungsi untuk memulai scanner
+function startScanner() {
+    const video = document.getElementById('scanner');
+    const canvas = document.getElementById('scan-canvas');
+    const scannerControls = document.getElementById('scanner-controls');
+    const scannerBtn = document.getElementById('scanner-btn');
+    
+    scannerBtn.style.display = 'none';
+    scannerControls.style.display = 'flex';
+    video.style.display = 'block';
+    scannerActive = true;
+    
+    // Meminta akses kamera
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(function(stream) {
+            videoStream = stream;
+            video.srcObject = stream;
+            video.play();
+            
+            // Memulai proses scanning
+            scanQRCode(video, canvas);
+        })
+        .catch(function(err) {
+            console.error("Error accessing camera: ", err);
+            alert('Tidak dapat mengakses kamera. Pastikan Anda memberikan izin.');
+            stopScanner();
+        });
+}
+
+// Fungsi untuk menghentikan scanner
+function stopScanner() {
+    const video = document.getElementById('scanner');
+    const scannerControls = document.getElementById('scanner-controls');
+    const scannerBtn = document.getElementById('scanner-btn');
+    
+    scannerActive = false;
+    scannerBtn.style.display = 'inline-block';
+    scannerControls.style.display = 'none';
+    video.style.display = 'none';
+    
+    if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+        video.srcObject = null;
+        videoStream = null;
+    }
+}
+
+// Fungsi untuk memindai QR code
+function scanQRCode(video, canvas) {
+    const ctx = canvas.getContext('2d');
+    
+    function tick() {
+        if (!scannerActive) return;
+        
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: 'dontInvert',
+            });
+            
+            if (code) {
+                // QR code ditemukan
+                stopScanner();
+                document.getElementById('scan-input').value = code.data;
+                handleManualScan();
+                return;
+            }
+        }
+        
+        requestAnimationFrame(tick);
+    }
+    
+    tick();
+}
+
+// Event listener untuk input scan di tab opname
+document.getElementById('scan-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        handleManualScan();
+    }
+}); 
+    </script>
+<style>
+    #sort-buttons {
+    display: none; /* Sembunyikan secara default */
+}
+
+#sort-buttons.visible {
+    display: block; /* Tampilkan saat class visible ada */
+}
+
+</style>
+<script>
+document.getElementById('toggle-sort-btn').addEventListener('click', function() {
+    const sortButtons = document.getElementById('sort-buttons');
+    sortButtons.style.display = sortButtons.style.display === 'none' ? 'block' : 'none';
+    
+    // Ganti icon filter ketika aktif/tidak
+    const icon = this.querySelector('i');
+    if (sortButtons.style.display === 'block') {
+        icon.classList.add('active-filter');
+    } else {
+        icon.classList.remove('active-filter');
+    }
+});
+</script>
+</body>
+</html>

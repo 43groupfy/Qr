@@ -1,19 +1,19 @@
 {
   "name": "Almeto - Alih Media Tools",
   "short_name": "Almeto",
-  "description": "Aplikasi watermark dan konversi PDF untuk arsiparis.",
-  "start_url": "/",
+  "start_url": "/almeto/",
+  "scope": "/almeto/",
   "display": "standalone",
   "background_color": "#800000",
   "theme_color": "#800000",
   "icons": [
     {
-      "src": "icons/icon-192.png",
+      "src": "/almeto/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "/almeto/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

@@ -1,456 +1,1096 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Almeto — Alih Media Tools</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Watermark - Almeto</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
 
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        :root {
+            --maroon: #800000;
+            --maroon-light: #a03333;
+            --maroon-dark: #660000;
+            --light: #f8f8f8;
+            --light-gray: #f0f0f0;
+            --dark: #222;
+            --text-secondary: #555;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-hover: 0 8px 20px rgba(0,0,0,0.12);
+            --radius: 12px;
+        }
 
-  <!-- Manifest -->
-  <link rel="manifest" href="/almeto/manifest.json">
-  <meta name="theme-color" content="#800000">
-  <link rel="icon" type="image/x-icon" href="icon.png">
+        body {
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
 
-  <style>
-    :root {
-      --primary: #800000;
-      --primary-light: #a03333;
-      --primary-dark: #660000;
-      --secondary: #6c757d;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --dark: #1e293b;
-      --light: #f8fafc;
-      --muted: #64748b;
-      --card-radius: 20px;
-      --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
 
-    * { 
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
+        /* Header */
+        header {
+            width: 100%;
+            padding: 2.5rem 1rem;
+            background: linear-gradient(135deg, var(--maroon) 0%, var(--maroon-light) 100%);
+            color: white;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
 
-    body {
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-      color: var(--dark);
-      line-height: 1.6;
-      min-height: 100vh;
-      padding: 0;
-      margin: 0;
-    }
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+            z-index: 0;
+        }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
+        .app-header {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
 
-    /* Header Styles */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    }
+        .app-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-weight: 700;
-      font-size: 1.75rem;
-      color: var(--dark);
-    }
+        .app-header p {
+            opacity: 0.9;
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-    .logo i {
-      color: var(--primary);
-      background: rgba(128, 0, 0, 0.1);
-      padding: 0.75rem;
-      border-radius: 12px;
-    }
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
 
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-    }
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
 
-    .nav-links a {
-      text-decoration: none;
-      color: var(--muted);
-      font-weight: 500;
-      transition: var(--transition);
-      padding: 0.5rem 0;
-      position: relative;
-    }
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
 
-    .nav-links a:hover {
-      color: var(--primary);
-    }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
 
-    .nav-links a.active {
-      color: var(--primary);
-    }
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
 
-    .nav-links a.active::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: var(--primary);
-      border-radius: 2px;
-    }
+        .card-title i {
+            color: var(--maroon);
+        }
 
-    /* App Header */
-    .app-header {
-      text-align: center;
-      margin-bottom: 3rem;
-      padding: 3rem 1rem;
-      border-radius: var(--card-radius);
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      color: white;
-      position: relative;
-      overflow: hidden;
-    }
+        /* Instructions */
+        .instructions {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--maroon);
+        }
 
-    .app-header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23ffffff" opacity="0.05"><polygon points="1000,0 1000,100 0,100"></polygon></svg>');
-      background-size: cover;
-    }
+        .instructions h3 {
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-    .app-header h1 {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-      position: relative;
-    }
+        .instructions ul {
+            margin-left: 1.5rem;
+            color: var(--text-secondary);
+        }
 
-    .app-header p {
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto;
-      opacity: 0.9;
-      position: relative;
-    }
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
 
-    /* Main Grid */
-    main {
-      padding: 0;
-      max-width: 1100px;
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-    }
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed #e2e8f0;
+            border-radius: var(--radius);
+            padding: 3rem 2rem;
+            text-align: center;
+            background: var(--light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
 
-    /* Card Styles */
-    .card {
-      background: white;
-      border-radius: var(--card-radius);
-      box-shadow: var(--card-shadow);
-      padding: 2rem;
-      transition: var(--transition);
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(0,0,0,0.03);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--maroon);
+            background: rgba(128, 0, 0, 0.05);
+        }
 
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
-    }
+        .upload-area.has-files {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
 
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: var(--primary);
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
-    }
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--maroon);
+        }
 
-    .card:hover::before {
-      transform: scaleX(1);
-    }
+        .upload-area.has-files .upload-icon {
+            color: #10b981;
+        }
 
-    .card i {
-      font-size: 2.5rem;
-      color: var(--primary);
-      margin-bottom: 1.5rem;
-      transition: transform 0.3s ease;
-    }
+        .upload-area p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
 
-    .card:hover i {
-      transform: scale(1.1);
-    }
+        input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
 
-    .card h3 {
-      font-size: 1.25rem;
-      color: var(--dark);
-      margin-bottom: 1rem;
-      font-weight: 600;
-    }
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background-color: var(--maroon);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
 
-    .card p {
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.5;
-      margin-bottom: 1.5rem;
-    }
+        .btn:hover {
+            background-color: var(--maroon-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
+        }
 
-    .card .btn {
-      margin-top: auto;
-      padding: 0.6rem 1.2rem;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
-    }
+        .btn:disabled {
+            background-color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
 
-    .card .btn:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
-    }
+        .btn-success {
+            background-color: #10b981;
+        }
 
-    /* Footer */
-    footer {
-      text-align: center;
-      margin-top: 3rem;
-      padding-top: 2rem;
-      color: var(--muted);
-      border-top: 1px solid rgba(0, 0, 0, 0.05);
-    }
+        .btn-success:hover {
+            background-color: #0ea271;
+        }
 
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 1.5rem;
-    }
+        .btn-warning {
+            background-color: #f59e0b;
+        }
 
-    .footer-links a {
-      color: var(--muted);
-      text-decoration: none;
-      transition: var(--transition);
-    }
+        .btn-warning:hover {
+            background-color: #e57e0f;
+        }
 
-    .footer-links a:hover {
-      color: var(--primary);
-    }
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
 
-    /* Splash Screen */
-    #splash {
-      position: fixed;
-      top: 0; 
-      left: 0;
-      width: 100%; 
-      height: 100%;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      z-index: 9999;
-      transition: opacity 0.6s ease;
-    }
-    #splash.fade-out { 
-      opacity: 0; 
-      pointer-events: none; 
-    }
-    #splash i {
-      margin-bottom: 1rem;
-      animation: pulse 1.5s infinite;
-    }
-    #splash h1 { 
-      font-size: 2rem; 
-      margin-bottom: 0.5rem; 
-      font-weight: 600;
-    }
-    #splash p {
-      opacity: 0.9;
-      font-size: 1rem;
-    }
+        /* File List */
+        .file-list {
+            margin-top: 1.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem;
+            background-color: white;
+        }
 
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
+        .file-item {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
 
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .container {
-        padding: 1.5rem 1rem;
-      }
-      
-      header {
-        flex-direction: column;
-        gap: 1.5rem;
-      }
+        .file-item:hover {
+            background-color: var(--light-gray);
+        }
 
-      .nav-links {
-        gap: 1.5rem;
-      }
-      
-      .app-header h1 {
-        font-size: 2rem;
-      }
-      
-      main {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-      
-      .card {
-        padding: 1.8rem 1.2rem;
-      }
-      
-      .card i {
-        font-size: 2.2rem;
-      }
-    }
+        .file-item:last-child {
+            border-bottom: none;
+        }
 
-    @media (max-width: 480px) {
-      .app-header h1 {
-        font-size: 1.6rem;
-      }
-      
-      .card {
-        padding: 1.5rem 1rem;
-      }
-    }
-  </style>
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .file-size {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Watermark Configuration */
+        .watermark-config {
+            margin-top: 1.5rem;
+        }
+
+        .watermark-upload {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .watermark-upload {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .watermark-option {
+            text-align: center;
+            padding: 1.5rem;
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            background: var(--light-gray);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .watermark-option:hover {
+            border-color: var(--maroon);
+        }
+
+        .watermark-option.has-image {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .watermark-option input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .watermark-preview {
+            margin-top: 1rem;
+        }
+
+        .preview-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .preview-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .preview-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 12px;
+        }
+
+        .preview-item img {
+            max-width: 100%;
+            max-height: 150px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .preview-label {
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Progress Container */
+        .progress-container {
+            margin: 2rem 0;
+            display: none;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .progress-label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .progress-percent {
+            font-weight: 600;
+            color: var(--maroon);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background-color: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, var(--maroon) 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Download Options */
+        .download-options {
+            margin-top: 2rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--light-gray);
+            border-radius: 12px;
+        }
+
+        .download-options h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Messages */
+        .error {
+            color: #ef4444;
+            background-color: #fef2f2;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            display: none;
+            border-left: 4px solid #ef4444;
+        }
+
+        .success {
+            color: #10b981;
+            background-color: #f0fdf9;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            display: none;
+            border-left: 4px solid #10b981;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            width: 100%;
+            background: var(--light-gray);
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        footer a {
+            color: var(--maroon);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+            color: var(--maroon-dark);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-
 <body>
-
-  <!-- Splash Screen -->
-  <div id="splash">
-    <i class="fa-solid fa-file-pdf fa-3x"></i>
-    <h1>Almeto</h1>
-    <p>Memuat Aplikasi...</p>
-  </div>
-
-  <div class="container">
     <!-- Header -->
     <header>
-      <div class="logo">
-        <i class="fas fa-file-pdf"></i>
-        <span>Almeto</span>
-      </div>
-      <nav class="nav-links">
-        <a href="#" class="active">Beranda</a>
-        <a href="#">Semua Alat</a>
-        <a href="#">Tentang</a>
-        <a href="#">Bantuan</a>
-      </nav>
+        <div class="container">
+            <div class="app-header">
+                <h1><i class="fa-solid fa-stamp"></i> PDF Watermark</h1>
+                <p>Tambahkan watermark otomatis ke PDF Anda - sesuaikan dengan orientasi halaman</p>
+            </div>
+        </div>
     </header>
 
-    <!-- App Header -->
-    <section class="app-header">
-      <h1>Alat Alih Media Digital</h1>
-      <p>Solusi lengkap untuk kebutuhan konversi dan pengelolaan dokumen digital</p>
-    </section>
+    <div class="container">
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Upload PDF Section -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-file-upload"></i>
+                    Upload File PDF
+                </div>
+                
+                <div class="instructions">
+                    <h3><i class="fas fa-info-circle"></i> Cara Penggunaan:</h3>
+                    <ul>
+                        <li>Upload file PDF (drag & drop atau klik area upload)</li>
+                        <li>Upload watermark untuk orientasi portrait dan landscape</li>
+                        <li>Sistem akan otomatis mengkonversi ke ukuran F4 terlebih dahulu</li>
+                        <li>Watermark akan disesuaikan dengan orientasi halaman</li>
+                        <li>Download file hasil yang sudah di-watermark dalam ukuran F4</li>
+                    </ul>
+                </div>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <p>Seret file PDF ke sini atau klik untuk memilih file</p>
+                    <button class="btn" id="selectFilesBtn">
+                        <i class="fas fa-file-pdf"></i>
+                        Pilih File PDF
+                    </button>
+                    <input type="file" id="fileInput" multiple accept=".pdf">
+                </div>
+                
+                <div class="file-list" id="fileList">
+                    <p id="noFilesMessage">Belum ada file yang dipilih</p>
+                </div>
+            </div>
 
-    <!-- Main Grid -->
-    <main>
-      <div class="card" onclick="location.href='img-to-pdf.html'">
-        <i class="fa-solid fa-image"></i>
-        <h3>Konversi Gambar ke PDF</h3>
-        <p>Ubah kumpulan gambar hasil alih media menjadi satu berkas PDF yang terorganisir.</p>
-        <button class="btn">Mulai Konversi</button>
-      </div>
+            <!-- Watermark Configuration -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-water"></i>
+                    Konfigurasi Watermark
+                </div>
+                
+                <p>Upload gambar watermark untuk portrait dan landscape:</p>
+                
+                <div class="watermark-upload">
+                    <div class="watermark-option" id="portraitWatermarkOption">
+                        <div class="upload-icon">
+                            <i class="fas fa-portrait"></i>
+                        </div>
+                        <h4>Watermark Portrait</h4>
+                        <p>Klik untuk upload gambar</p>
+                        <input type="file" id="portraitWatermark" accept=".png,.jpg,.jpeg">
+                    </div>
+                    
+                    <div class="watermark-option" id="landscapeWatermarkOption">
+                        <div class="upload-icon">
+                            <i class="fas fa-landscape"></i>
+                        </div>
+                        <h4>Watermark Landscape</h4>
+                        <p>Klik untuk upload gambar</p>
+                        <input type="file" id="landscapeWatermark" accept=".png,.jpg,.jpeg">
+                    </div>
+                </div>
+                
+                <div class="watermark-preview">
+                    <h4>Preview Watermark</h4>
+                    <div class="preview-container">
+                        <div class="preview-item">
+                            <img src="" alt="Watermark Portrait Preview" id="previewPortrait" style="display: none;">
+                            <div class="preview-label" id="portraitLabel">Belum diupload</div>
+                        </div>
+                        <div class="preview-item">
+                            <img src="" alt="Watermark Landscape Preview" id="previewLandscape" style="display: none;">
+                            <div class="preview-label" id="landscapeLabel">Belum diupload</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-      <div class="card" onclick="location.href='pdf-watermark.html'">
-        <i class="fa-solid fa-stamp"></i>
-        <h3>Tambahkan Watermark</h3>
-        <p>Lindungi dokumen PDF dengan watermark teks atau logo institusi.</p>
-        <button class="btn">Tambahkan</button>
-      </div>
+        <!-- Progress Section -->
+        <div id="progressContainer" class="progress-container">
+            <div class="progress-header">
+                <div class="progress-label">Memproses PDF...</div>
+                <div class="progress-percent" id="progressPercent">0%</div>
+            </div>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+            <div id="progressText" class="progress-text">Mempersiapkan...</div>
+        </div>
 
-      <div class="card" onclick="location.href='pdf-split.html'">
-        <i class="fa-solid fa-scissors"></i>
-        <h3>Pisahkan Halaman PDF</h3>
-        <p>Pecah file PDF menjadi beberapa bagian sesuai kebutuhan.</p>
-        <button class="btn">Pisahkan</button>
-      </div>
+        <!-- Messages -->
+        <div id="errorMessage" class="error"></div>
+        <div id="successMessage" class="success"></div>
 
-      <div class="card" onclick="location.href='pdf-merge.html'">
-        <i class="fa-solid fa-layer-group"></i>
-        <h3>Gabungkan File PDF</h3>
-        <p>Satukan beberapa file PDF menjadi satu dokumen lengkap.</p>
-        <button class="btn">Gabungkan</button>
-      </div>
-    </main>
+        <!-- Download Options -->
+        <div class="download-options">
+            <h3>Opsi Download</h3>
+            <div class="action-buttons">
+                <button class="btn" id="processBtn" disabled>
+                    <i class="fas fa-cog"></i>
+                    Proses Watermark
+                </button>
+                <button class="btn btn-success" id="downloadBtn" disabled>
+                    <i class="fas fa-download"></i>
+                    Download Semua (Individu)
+                </button>
+                <button class="btn btn-warning" id="downloadZipBtn" disabled>
+                    <i class="fas fa-file-archive"></i>
+                    Download ZIP
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer>
-      <div class="footer-links">
-        <a href="#">Tentang Kami</a>
-        <a href="#">Kebijakan Privasi</a>
-        <a href="#">Syarat Layanan</a>
-        <a href="#">Kontak</a>
-      </div>
-      <p>© 2025 <b>Almeto</b> | Dikembangkan untuk aktualisasi Latsar ASN</p>
-    </footer>
-  </div>
-
-  <!-- Script: Splash + Domain Protection + PWA -->
-  <script>
-    // Proteksi Domain
-    const allowedDomains = ['tatang.vercel.app'];
-    if (!allowedDomains.includes(location.hostname)) {
-      document.body.innerHTML = `
-        <div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;padding:2rem;text-align:center;">
-          <i class="fa-solid fa-triangle-exclamation" style="font-size:3rem;color:#800000;margin-bottom:1rem;"></i>
-          <h2 style="margin-bottom:1rem;">Akses Tidak Diizinkan</h2>
-          <p style="max-width:400px;color:#555;">Aplikasi ini hanya dapat diakses melalui domain yang telah ditentukan.</p>
+        <div class="container">
+            <p>© 2025 <b>Almeto</b> | Dikembangkan untuk aktualisasi Latsar ASN | <a href="#">Kebijakan Privasi</a></p>
         </div>
-      `;
-    }
+    </footer>
 
-    // Splash Fade Out
-    window.addEventListener('load', () => {
-      const splash = document.getElementById('splash');
-      setTimeout(() => splash.classList.add('fade-out'), 1500);
-    });
-
-    // Daftarkan Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(() => console.log('Service Worker terdaftar'));
-    }
-  </script>
-
+    <script>
+        // Konfigurasi PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+        
+        // Elemen DOM
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const selectFilesBtn = document.getElementById('selectFilesBtn');
+        const fileList = document.getElementById('fileList');
+        const noFilesMessage = document.getElementById('noFilesMessage');
+        const processBtn = document.getElementById('processBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const downloadZipBtn = document.getElementById('downloadZipBtn');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const progressPercent = document.getElementById('progressPercent');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const previewPortrait = document.getElementById('previewPortrait');
+        const previewLandscape = document.getElementById('previewLandscape');
+        const portraitWatermarkInput = document.getElementById('portraitWatermark');
+        const landscapeWatermarkInput = document.getElementById('landscapeWatermark');
+        const portraitLabel = document.getElementById('portraitLabel');
+        const landscapeLabel = document.getElementById('landscapeLabel');
+        const portraitWatermarkOption = document.getElementById('portraitWatermarkOption');
+        const landscapeWatermarkOption = document.getElementById('landscapeWatermarkOption');
+        
+        // Data aplikasi
+        let files = [];
+        let processedFiles = [];
+        let watermarkImages = {
+            portrait: null,
+            landscape: null
+        };
+        
+        // Event listeners
+        selectFilesBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFileSelect);
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('dragleave', handleDragLeave);
+        uploadArea.addEventListener('drop', handleDrop);
+        processBtn.addEventListener('click', processFiles);
+        downloadBtn.addEventListener('click', downloadAll);
+        downloadZipBtn.addEventListener('click', downloadAsZip);
+        portraitWatermarkInput.addEventListener('change', (e) => handleWatermarkUpload(e, 'portrait'));
+        landscapeWatermarkInput.addEventListener('change', (e) => handleWatermarkUpload(e, 'landscape'));
+        
+        // Fungsi untuk handle upload watermark
+        function handleWatermarkUpload(event, type) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        watermarkImages[type] = {
+                            image: img,
+                            dataUrl: e.target.result
+                        };
+                        
+                        // Update preview
+                        const previewElement = type === 'portrait' ? previewPortrait : previewLandscape;
+                        const labelElement = type === 'portrait' ? portraitLabel : landscapeLabel;
+                        const optionElement = type === 'portrait' ? portraitWatermarkOption : landscapeWatermarkOption;
+                        
+                        previewElement.src = e.target.result;
+                        previewElement.style.display = 'block';
+                        labelElement.textContent = `${file.name} (${img.width}x${img.height})`;
+                        optionElement.classList.add('has-image');
+                        
+                        updateProcessButton();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Fungsi untuk menangani pemilihan file
+        function handleFileSelect(e) {
+            const selectedFiles = e.target.files;
+            addFiles(selectedFiles);
+        }
+        
+        // Fungsi untuk menangani drag over
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+        
+        // Fungsi untuk menangani drag leave
+        function handleDragLeave(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        }
+        
+        // Fungsi untuk menangani drop file
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const droppedFiles = e.dataTransfer.files;
+            addFiles(droppedFiles);
+        }
+        
+        // Fungsi untuk menambahkan file ke daftar
+        function addFiles(fileList) {
+            for (let i = 0; i < fileList.length; i++) {
+                const file = fileList[i];
+                if (file.type === 'application/pdf') {
+                    files.push(file);
+                } else {
+                    showError(`File "${file.name}" bukan file PDF. Hanya file PDF yang didukung.`);
+                }
+            }
+            
+            updateFileList();
+            updateProcessButton();
+        }
+        
+        // Fungsi untuk memperbarui daftar file
+        function updateFileList() {
+            fileList.innerHTML = '';
+            
+            if (files.length === 0) {
+                fileList.appendChild(noFilesMessage);
+                noFilesMessage.style.display = 'block';
+                uploadArea.classList.remove('has-files');
+                return;
+            }
+            
+            noFilesMessage.style.display = 'none';
+            uploadArea.classList.add('has-files');
+            
+            files.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                const fileInfo = document.createElement('div');
+                fileInfo.className = 'file-info';
+                fileInfo.innerHTML = `
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-size">${formatFileSize(file.size)}</div>
+                `;
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                removeBtn.className = 'btn btn-sm';
+                removeBtn.style.backgroundColor = '#ef4444';
+                removeBtn.addEventListener('click', () => {
+                    files.splice(index, 1);
+                    updateFileList();
+                    updateProcessButton();
+                });
+                
+                fileItem.appendChild(fileInfo);
+                fileItem.appendChild(removeBtn);
+                fileList.appendChild(fileItem);
+            });
+        }
+        
+        // Format ukuran file
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Fungsi untuk memperbarui status tombol proses
+        function updateProcessButton() {
+            processBtn.disabled = files.length === 0 || !watermarkImages.portrait || !watermarkImages.landscape;
+        }
+        
+        // Tampilkan error
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Tampilkan success
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Fungsi utama untuk memproses file
+        async function processFiles() {
+            if (files.length === 0) return;
+            
+            processBtn.disabled = true;
+            downloadBtn.disabled = true;
+            downloadZipBtn.disabled = true;
+            processedFiles = [];
+            errorMessage.textContent = '';
+            errorMessage.style.display = 'none';
+            
+            progressContainer.style.display = 'block';
+            progressFill.style.width = '0%';
+            progressText.textContent = 'Memulai proses...';
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                progressText.textContent = `Memproses ${file.name} (${i+1}/${files.length})`;
+                
+                try {
+                    const watermarkedPdf = await addWatermarkToPdf(file);
+                    processedFiles.push({
+                        name: file.name.replace('.pdf', '_watermarked.pdf'),
+                        blob: watermarkedPdf
+                    });
+                    
+                    // Update progress bar
+                    const progress = ((i + 1) / files.length) * 100;
+                    progressFill.style.width = `${progress}%`;
+                    progressPercent.textContent = `${Math.round(progress)}%`;
+                } catch (error) {
+                    console.error(`Error processing ${file.name}:`, error);
+                    showError(`Error memproses ${file.name}: ${error.message}`);
+                }
+            }
+            
+            progressText.textContent = `Selesai! ${processedFiles.length} file telah diproses.`;
+            downloadBtn.disabled = processedFiles.length === 0;
+            downloadZipBtn.disabled = processedFiles.length === 0;
+            processBtn.disabled = false;
+            
+            if (processedFiles.length > 0) {
+                showSuccess(`Berhasil memproses ${processedFiles.length} file PDF.`);
+            }
+        }
+        
+        // Fungsi untuk menambahkan watermark ke PDF
+        async function addWatermarkToPdf(file) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    
+                    // Membuat PDF baru menggunakan jsPDF
+                    const { jsPDF } = window.jspdf;
+                    let newPdf = null;
+                    
+                    // Memproses setiap halaman
+                    for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+                        const page = await pdfDoc.getPage(pageNum);
+                        const viewport = page.getViewport({ scale: 1.5 });
+                        
+                        // Menentukan orientasi halaman
+                        const width = viewport.width;
+                        const height = viewport.height;
+                        const isLandscape = width > height;
+                        
+                        // Menentukan watermark yang sesuai
+                        const orientation = isLandscape ? 'landscape' : 'portrait';
+                        const watermarkData = watermarkImages[orientation];
+                        
+                        if (!watermarkData) {
+                            reject(new Error(`Watermark untuk ${orientation} belum diupload`));
+                            return;
+                        }
+                        
+                        // Canvas untuk menggambar halaman PDF
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = width;
+                        canvas.height = height;
+                        
+                        // Render halaman PDF ke canvas
+                        await page.render({
+                            canvasContext: ctx,
+                            viewport: viewport
+                        }).promise;
+                        
+                        // Menambahkan watermark
+                        await addWatermarkToCanvas(canvas, watermarkData);
+                        
+                        // Convert canvas ke image data
+                        const imgData = canvas.toDataURL('image/jpeg', 0.8);
+                        
+                        // Konversi ke ukuran F4 - TAMBAHKAN RUANG KOSONG
+                        const f4Dimensions = getF4Dimensions(isLandscape);
+                        
+                        // Menambahkan halaman ke PDF baru
+                        if (pageNum === 1) {
+                            newPdf = new jsPDF({
+                                orientation: isLandscape ? 'landscape' : 'portrait',
+                                unit: 'mm',
+                                format: [f4Dimensions.width, f4Dimensions.height]
+                            });
+                        } else {
+                            newPdf.addPage([f4Dimensions.width, f4Dimensions.height], isLandscape ? 'landscape' : 'portrait');
+                        }
+                        
+                        // Hitung posisi untuk menempatkan konten asli di tengah F4
+                        const contentDimensions = calculateContentDimensions(width, height, f4Dimensions);
+                        const xOffset = (f4Dimensions.width - contentDimensions.width) / 2;
+                        const yOffset = (f4Dimensions.height - contentDimensions.height) / 2;
+                        
+                        // Tambahkan gambar konten asli dengan ukuran original di tengah
+                        newPdf.addImage({
+                            imageData: imgData,
+                            x: xOffset,
+                            y: yOffset,
+                            width: contentDimensions.width,
+                            height: contentDimensions.height
+                        });
+                    }
+                    
+                    // Mengembalikan PDF yang sudah di-watermark sebagai blob
+                    const pdfBlob = newPdf.output('blob');
+                    resolve(pdfBlob);
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+        
+        // Fungsi untuk mendapatkan dimensi F4 dalam mm
+        function getF4Dimensions(isLandscape) {
+            // Ukuran F4 dalam mm: 210 x 330
+            const f4Width = 210;
+            const f4Height = 330;
+            
+            return isLandscape ? 
+                { width: f4Height, height: f4Width } : 
+                { width: f4Width, height: f4Height };
+        }
+        
+        // Fungsi untuk menghitung dimensi konten asli dalam mm (tidak di-scale)
+        function calculateContentDimensions(originalWidth, originalHeight, f4Dimensions) {
+            // Konversi dari px ke mm (perkiraan: 1px = 0.264583 mm)
+            const pxToMm = 0.264583;
+            const contentWidth = originalWidth * pxToMm;
+            const contentHeight = originalHeight * pxToMm;
+            
+            // Jika konten lebih besar dari F4, scale down
+            if (contentWidth > f4Dimensions.width || contentHeight > f4Dimensions.height) {
+                const widthScale = f4Dimensions.width / contentWidth;
+                const heightScale = f4Dimensions.height / contentHeight;
+                const scale = Math.min(widthScale, heightScale);
+                
+                return {
+                    width: contentWidth * scale,
+                    height: contentHeight * scale
+                };
+            }
+            
+            // Jika konten lebih kecil, biarkan ukuran asli
+            return {
+                width: contentWidth,
+                height: contentHeight
+            };
+        }
+        
+        // Fungsi untuk menambahkan watermark ke canvas
+        function addWatermarkToCanvas(canvas, watermarkData) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const ctx = canvas.getContext('2d');
+                    const watermarkImg = watermarkData.image;
+                    
+                    // Menggambar watermark di tengah canvas dengan ukuran 40% dari canvas
+                    const scale = 0.4;
+                    const watermarkWidth = watermarkImg.width * scale;
+                    const watermarkHeight = watermarkImg.height * scale;
+                    
+                    const x = (canvas.width - watermarkWidth) / 2;
+                    const y = (canvas.height - watermarkHeight) / 2;
+                    
+                    // Simpan state canvas
+                    ctx.save();
+                    
+                    // Set transparansi
+                    ctx.globalAlpha = 0.6;
+                    
+                    // Gambar watermark
+                    ctx.drawImage(watermarkImg, x, y, watermarkWidth, watermarkHeight);
+                    
+                    // Restore state canvas
+                    ctx.restore();
+                    
+                    resolve();
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+        
+        // Fungsi untuk mendownload semua file yang sudah diproses secara individual
+        function downloadAll() {
+            if (processedFiles.length === 0) return;
+            
+            processedFiles.forEach(file => {
+                const url = URL.createObjectURL(file.blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = file.name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 100);
+            });
+        }
+        
+        // Fungsi untuk mendownload semua file dalam format ZIP
+        function downloadAsZip() {
+            if (processedFiles.length === 0) return;
+            
+            progressText.textContent = 'Membuat file ZIP...';
+            
+            const zip = new JSZip();
+            const folder = zip.folder("pdf_watermarked");
+            
+            // Menambahkan setiap file ke ZIP
+            processedFiles.forEach(file => {
+                folder.file(file.name, file.blob);
+            });
+            
+            // Generate ZIP dan download
+            zip.generateAsync({type:"blob"})
+                .then(function(content) {
+                    saveAs(content, "pdf_watermarked.zip");
+                    progressText.textContent = 'File ZIP berhasil diunduh!';
+                    showSuccess('File ZIP berhasil diunduh!');
+                })
+                .catch(function(error) {
+                    console.error('Error creating ZIP:', error);
+                    showError('Terjadi kesalahan saat membuat file ZIP');
+                    progressText.textContent = 'Gagal membuat file ZIP';
+                });
+        }
+    </script>
 </body>
 </html>

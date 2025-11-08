@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konversi Gambar ke PDF - Almeto</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    :root {
+      --maroon: #800000;
+      --maroon-light: #a03333;
+      --maroon-dark: #660000;
+      --light: #f8f8f8;
+      --light-gray: #f0f0f0;
+      --dark: #222;
+      --text-secondary: #555;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-hover: 0 8px 20px rgba(0,0,0,0.12);
+      --radius: 12px;
+    }
+
+    body {
+      background: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Header */
+    header {
+      width: 100%;
+      padding: 2.5rem 1rem;
+      background: linear-gradient(135deg, var(--maroon) 0%, var(--maroon-light) 100%);
+      color: white;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+      z-index: 0;
+    }
+
+    .app-header {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .app-header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .app-header p {
+      opacity: 0.9;
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Main Content */
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Card Styles */
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease-in-out;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .card-title i {
+      color: var(--maroon);
+    }
+
+    /* Drop Area */
+    #drop-area {
+      border: 2px dashed #e2e8f0;
+      border-radius: var(--radius);
+      padding: 3rem 2rem;
+      text-align: center;
+      background: var(--light-gray);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    #drop-area:hover, #drop-area.dragover {
+      border-color: var(--maroon);
+      background: rgba(128, 0, 0, 0.05);
+    }
+
+    #drop-area i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--maroon);
+    }
+
+    #drop-area p {
+      margin-bottom: 1.5rem;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+
+    .file-info {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    /* Button Styles */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background-color: var(--maroon);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: var(--maroon-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
+    }
+
+    .btn-secondary {
+      background-color: var(--text-secondary);
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+
+    .btn-success {
+      background-color: #10b981;
+    }
+
+    .btn-success:hover {
+      background-color: #0ea271;
+    }
+
+    .btn-danger {
+      background-color: #ef4444;
+    }
+
+    .btn-danger:hover {
+      background-color: #dc2626;
+    }
+
+    .btn.active {
+      background-color: var(--maroon-dark);
+      box-shadow: 0 0 0 2px rgba(128, 0, 0, 0.3);
+    }
+
+    /* Action Buttons */
+    #sort-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    /* Options Container */
+    .options-container {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    .option-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      background: var(--light-gray);
+      border-radius: 12px;
+    }
+
+    .option-group label {
+      font-weight: 500;
+    }
+
+    select {
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: white;
+      transition: all 0.3s ease;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--maroon);
+      box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.15);
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--maroon);
+    }
+
+    /* Preview Area */
+    #preview {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      gap: 1.5rem;
+      justify-content: center;
+      min-height: 150px;
+    }
+
+    .img-container {
+      width: 180px;
+      height: 200px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      padding: 1rem;
+      border-radius: 12px;
+      text-align: center;
+      cursor: move;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .img-container:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .img-preview {
+      width: 100%;
+      height: 120px;
+      object-fit: contain;
+      display: block;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      background: #f8f9fa;
+      transition: transform 0.3s ease;
+    }
+
+    .img-container small {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
+      margin-top: auto;
+      font-weight: 500;
+    }
+
+    .rotate-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--maroon);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .img-container:hover .rotate-btn {
+      opacity: 1;
+    }
+
+    .rotate-btn:hover {
+      background: white;
+      color: var(--maroon-dark);
+      transform: scale(1.1);
+    }
+
+    .img-checkbox-container {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .img-container:hover .img-checkbox-container,
+    .img-container.selected .img-checkbox-container {
+      opacity: 1;
+    }
+
+    .img-checkbox {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--maroon);
+      cursor: pointer;
+      z-index: 30;
+    }
+
+    .img-container.selected {
+      border: 2px solid var(--maroon);
+      box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.2);
+    }
+
+    /* Generate Button */
+    #generate-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 2rem auto;
+      padding: 16px 40px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      background-color: var(--maroon);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
+    }
+
+    #generate-btn:hover {
+      background-color: var(--maroon-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(128, 0, 0, 0.4);
+    }
+
+    #generate-btn:disabled {
+      background-color: var(--text-secondary);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Progress Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 20px;
+      background: #e9ecef;
+      border-radius: 10px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--maroon), var(--maroon-light));
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .file-count {
+      margin-top: 0.5rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 0;
+      color: var(--text-secondary);
+    }
+
+    .empty-state i {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .empty-state p {
+      font-size: 1.1rem;
+    }
+
+    /* File Name Input */
+    .filename-container {
+      display: flex;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
+
+    .filename-input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      background: var(--light-gray);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .filename-input label {
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .filename-input input {
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: white;
+      flex-grow: 1;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    .filename-input input:focus {
+      outline: none;
+      border-color: var(--maroon);
+      box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.15);
+    }
+
+    /* Orientation indicator */
+    .orientation-indicator {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 8px;
+      right: 48px;
+      background: rgba(239, 68, 68, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    
+    .img-container:hover .delete-btn {
+      opacity: 1;
+    }
+    
+    .delete-btn:hover {
+      background: #dc2626;
+      transform: scale(1.1);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 2rem 1rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      width: 100%;
+      background: var(--light-gray);
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    footer a {
+      color: var(--maroon);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+      color: var(--maroon-dark);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem 1rem;
+      }
+      
+      .options-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+      
+      .img-container {
+        width: 150px;
+        height: 180px;
+      }
+      
+      .img-preview {
+        height: 100px;
+      }
+      
+      #sort-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      #sort-buttons .btn {
+        width: 100%;
+        max-width: 250px;
+      }
+      
+      .filename-input {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      
+      .filename-input input {
+        width: 100%;
+      }
+      
+      .delete-btn {
+        right: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="app-header">
+        <h1><i class="fas fa-image"></i> Konversi Gambar ke PDF</h1>
+        <p>Konversi gambar ke PDF dengan mudah - pilih ukuran kertas, atur urutan, dan unduh hasilnya</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Upload Card -->
+    <div class="card">
+      <div class="card-title">
+        <i class="fas fa-file-upload"></i>
+        Upload Gambar
+      </div>
+      
+      <div id="drop-area" onclick="document.getElementById('fileElem').click()">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Seret & lepaskan gambar di sini, atau klik untuk memilih file</p>
+        <input type="file" id="fileElem" multiple accept="image/*" style="display:none">
+        <button class="btn"><i class="fas fa-images"></i> Pilih Gambar</button>
+        <p class="file-info">Format yang didukung: JPG, PNG, GIF</p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div id="sort-buttons">
+      <button class="btn btn-secondary active" id="sort-az" onclick="sortImages(true)"><i class="fas fa-sort-alpha-down"></i> Urutkan A-Z</button>
+      <button class="btn btn-secondary" id="sort-za" onclick="sortImages(false)"><i class="fas fa-sort-alpha-down-alt"></i> Urutkan Z-A</button>
+      <button class="btn" id="select-all-btn" onclick="toggleSelectAll()"><i class="fas fa-object-group"></i> Pilih Semua</button>
+      <button class="btn" id="rotate-selected-btn" onclick="rotateSelectedImages()"><i class="fas fa-sync"></i> Putar Gambar Terpilih</button>
+      <button class="btn btn-danger" id="delete-selected-btn" onclick="deleteSelectedImages()"><i class="fas fa-trash"></i> Hapus Gambar Terpilih</button>
+      <button class="btn btn-danger" onclick="resetAll()"><i class="fas fa-broom"></i> Hapus Semua</button>
+    </div>
+
+    <!-- Options -->
+    <div class="options-container">
+      <div class="option-group">
+        <input type="checkbox" id="togglePreview" checked>
+        <label for="togglePreview">Tampilkan Preview Gambar</label>
+      </div>
+      
+      <div class="option-group">
+        <label for="paperSize"><i class="fas fa-file"></i> Ukuran Kertas: </label>
+        <select id="paperSize">
+          <option value="F4" selected>F4 (210 x 330 mm)</option>
+          <option value="A4">A4 (210 x 297 mm)</option>
+          <option value="A3">A3 (297 x 420 mm)</option>
+          <option value="Legal">Legal (216 x 356 mm)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- File Name Input -->
+    <div class="filename-container">
+      <div class="filename-input">
+        <label for="pdfFilename"><i class="fas fa-file-signature"></i> Nama File PDF:</label>
+        <input type="text" id="pdfFilename" placeholder="Masukkan nama file PDF" value="output">
+        <span>.pdf</span>
+      </div>
+    </div>
+
+    <!-- Preview Card -->
+    <div class="card">
+      <div class="card-title">
+        <i class="fas fa-images"></i>
+        Preview Gambar
+      </div>
+      
+      <div id="preview">
+        <div class="empty-state">
+          <i class="fas fa-images"></i>
+          <p>Belum ada gambar yang diunggah</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate Button -->
+    <button id="generate-btn"><i class="fas fa-file-export"></i> Buat PDF</button>
+  </div>
+
+  <!-- Progress Modal -->
+  <div class="modal" id="progressModal">
+    <div class="modal-content">
+      <h2><i class="fas fa-cog fa-spin"></i> Membuat PDF</h2>
+      <div class="progress-text" id="progressText">Mempersiapkan...</div>
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="file-count" id="fileCount">0/0 gambar diproses</div>
+      <button class="btn btn-danger" id="cancelBtn" style="margin-top: 20px;"><i class="fas fa-times"></i> Batal</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>© 2025 <b>Almeto</b> | Dikembangkan untuk aktualisasi Latsar ASN | <a href="#">Kebijakan Privasi</a></p>
+    </div>
+  </footer>
+
+  <!-- jsPDF CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- SortableJS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+  <script>
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('fileElem');
+    const preview = document.getElementById('preview');
+    const generateBtn = document.getElementById('generate-btn');
+    const togglePreview = document.getElementById('togglePreview');
+    const sortAzBtn = document.getElementById('sort-az');
+    const sortZaBtn = document.getElementById('sort-za');
+    const selectAllBtn = document.getElementById('select-all-btn');
+    const rotateSelectedBtn = document.getElementById('rotate-selected-btn');
+    const deleteSelectedBtn = document.getElementById('delete-selected-btn');
+    const progressModal = document.getElementById('progressModal');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const fileCountElem = document.getElementById('fileCount');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const pdfFilenameInput = document.getElementById('pdfFilename');
+    
+    let images = [];
+    let isConverting = false;
+    let conversionCanceled = false;
+    let allSelected = false;
+
+    // Event listeners
+    dropArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropArea.classList.add('dragover');
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+      dropArea.classList.remove('dragover');
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropArea.classList.remove('dragover');
+      handleFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', () => {
+      handleFiles(fileInput.files);
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      conversionCanceled = true;
+      hideProgressModal();
+      generateBtn.disabled = false;
+    });
+
+    // Validasi input nama file
+    pdfFilenameInput.addEventListener('input', function() {
+      // Hapus karakter yang tidak valid untuk nama file
+      this.value = this.value.replace(/[<>:"/\\|?*]/g, '');
+      
+      // Batasi panjang nama file
+      if (this.value.length > 100) {
+        this.value = this.value.substring(0, 100);
+      }
+    });
+
+    function handleFiles(files) {
+      for (let file of files) {
+        if (!file.type.startsWith('image/')) continue;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const imgSrc = e.target.result;
+          images.push({ name: file.name, src: imgSrc, rotation: 0, selected: false });
+          // Urutkan A-Z secara default setelah menambahkan gambar
+          sortImages(true);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function renderPreview() {
+      // Remove empty state if it exists
+      const emptyState = preview.querySelector('.empty-state');
+      if (emptyState) {
+        emptyState.remove();
+      }
+      
+      preview.innerHTML = '';
+      const showPreview = togglePreview.checked;
+
+      if (images.length === 0) {
+        const emptyState = document.createElement('div');
+        emptyState.className = 'empty-state';
+        emptyState.innerHTML = `
+          <i class="fas fa-images"></i>
+          <p>Belum ada gambar yang diunggah</p>
+        `;
+        preview.appendChild(emptyState);
+        return;
+      }
+
+      images.forEach(({ name, src, rotation, selected }, index) => {
+        const container = document.createElement('div');
+        container.className = `img-container ${selected ? 'selected' : ''}`;
+        container.dataset.index = index;
+
+        // Determine orientation based on rotation
+        const isLandscape = rotation === 90 || rotation === 270;
+        const orientationText = isLandscape ? 'L' : 'P';
+
+        if (showPreview) {
+          container.innerHTML = `
+            <div class="img-checkbox-container">
+              <input type="checkbox" class="img-checkbox" ${selected ? 'checked' : ''} onchange="toggleImageSelection(${index})">
+            </div>
+            <img src="${src}" alt="${name}" class="img-preview" loading="lazy" style="transform: rotate(${rotation}deg)">
+            <small>${name}</small>
+            <button class="delete-btn" onclick="deleteSingleImage(${index})" title="Hapus gambar">
+              <i class="fas fa-times"></i>
+            </button>
+            <button class="rotate-btn" onclick="rotateImage(${index})"><i class="fas fa-redo"></i></button>
+            <div class="orientation-indicator">${orientationText}</div>
+          `;
+        } else {
+          container.innerHTML = `
+            <div class="img-checkbox-container">
+              <input type="checkbox" class="img-checkbox" ${selected ? 'checked' : ''} onchange="toggleImageSelection(${index})">
+            </div>
+            <small>${name}</small>
+            <button class="delete-btn" onclick="deleteSingleImage(${index})" title="Hapus gambar">
+              <i class="fas fa-times"></i>
+            </button>
+            <button class="rotate-btn" onclick="rotateImage(${index})"><i class="fas fa-redo"></i></button>
+            <div class="orientation-indicator">${orientationText}</div>
+          `;
+        }
+
+        preview.appendChild(container);
+      });
+      
+      // Initialize Sortable if not already initialized
+      if (!preview.sortable) {
+        preview.sortable = new Sortable(preview, {
+          animation: 150,
+          onEnd: () => {
+            const newImages = [];
+            const containers = document.querySelectorAll('.img-container');
+            containers.forEach(container => {
+              const index = parseInt(container.dataset.index);
+              newImages.push(images[index]);
+            });
+            images = newImages;
+            // Nonaktifkan tampilan tombol sortir setelah drag and drop manual
+            sortAzBtn.classList.remove('active');
+            sortZaBtn.classList.remove('active');
+            renderPreview();
+          }
+        });
+      }
+    }
+
+    function toggleImageSelection(index) {
+      images[index].selected = !images[index].selected;
+      renderPreview();
+    }
+
+    function toggleSelectAll() {
+      allSelected = !allSelected;
+      images.forEach(img => {
+        img.selected = allSelected;
+      });
+      
+      selectAllBtn.innerHTML = allSelected ? 
+        '<i class="fas fa-times-circle"></i> Batal Pilih Semua' : 
+        '<i class="fas fa-object-group"></i> Pilih Semua';
+        
+      renderPreview();
+    }
+
+    function rotateImage(index) {
+      images[index].rotation = (images[index].rotation + 90) % 360;
+      renderPreview();
+    }
+
+    function rotateSelectedImages() {
+      const hasSelected = images.some(img => img.selected);
+      
+      if (!hasSelected) {
+        alert('Pilih setidaknya satu gambar untuk diputar.');
+        return;
+      }
+      
+      images.forEach((img, index) => {
+        if (img.selected) {
+          images[index].rotation = (img.rotation + 90) % 360;
+        }
+      });
+      
+      renderPreview();
+    }
+
+    function deleteSingleImage(index) {
+      if (confirm(`Apakah Anda yakin ingin menghapus gambar ${images[index].name}?`)) {
+        images.splice(index, 1);
+        renderPreview();
+      }
+    }
+
+    function deleteSelectedImages() {
+      const hasSelected = images.some(img => img.selected);
+      
+      if (!hasSelected) {
+        alert('Pilih setidaknya satu gambar untuk dihapus.');
+        return;
+      }
+      
+      if (confirm('Apakah Anda yakin ingin menghapus gambar yang dipilih?')) {
+        images = images.filter(img => !img.selected);
+        allSelected = false;
+        selectAllBtn.innerHTML = '<i class="fas fa-object-group"></i> Pilih Semua';
+        renderPreview();
+      }
+    }
+
+    function sortImages(ascending = true) {
+      if (images.length === 0) return;
+      
+      // Update status aktif tombol
+      sortAzBtn.classList.toggle('active', ascending);
+      sortZaBtn.classList.toggle('active', !ascending);
+      
+      images.sort((a, b) => {
+        const nameA = a.name.toLowerCase();
+        const nameB = b.name.toLowerCase();
+        if (nameA < nameB) return ascending ? -1 : 1;
+        if (nameA > nameB) return ascending ? 1 : -1;
+        return 0;
+      });
+      renderPreview();
+    }
+
+    function resetAll() {
+      if (images.length === 0) return;
+      
+      if (confirm('Apakah Anda yakin ingin menghapus semua gambar?')) {
+        images = [];
+        preview.innerHTML = '';
+        fileInput.value = '';
+        allSelected = false;
+        
+        // Reset tombol sort ke default A-Z
+        sortAzBtn.classList.add('active');
+        sortZaBtn.classList.remove('active');
+        
+        // Reset tombol pilih semua
+        selectAllBtn.innerHTML = '<i class="fas fa-object-group"></i> Pilih Semua';
+        
+        // Add empty state back
+        const emptyState = document.createElement('div');
+        emptyState.className = 'empty-state';
+        emptyState.innerHTML = `
+          <i class="fas fa-images"></i>
+          <p>Belum ada gambar yang diunggah</p>
+        `;
+        preview.appendChild(emptyState);
+      }
+    }
+
+    togglePreview.addEventListener('change', renderPreview);
+
+    generateBtn.addEventListener('click', async () => {
+      if (images.length === 0) {
+        alert('Silakan unggah setidaknya satu gambar terlebih dahulu.');
+        return;
+      }
+      
+      // Validasi nama file
+      let filename = pdfFilenameInput.value.trim();
+      if (filename === '') {
+        alert('Silakan masukkan nama file PDF.');
+        pdfFilenameInput.focus();
+        return;
+      }
+      
+      // Tambahkan ekstensi .pdf jika belum ada
+      if (!filename.toLowerCase().endsWith('.pdf')) {
+        filename += '.pdf';
+      }
+      
+      isConverting = true;
+      conversionCanceled = false;
+      generateBtn.disabled = true;
+      
+      showProgressModal();
+      updateProgress(0, 'Mempersiapkan...');
+      
+      const { jsPDF } = window.jspdf;
+
+      const sizeMap = {
+        F4: [210, 330],
+        A4: [210, 297],
+        A3: [297, 420],
+        Legal: [216, 356]
+      };
+
+      const selectedSize = document.getElementById('paperSize').value;
+      const pageSize = sizeMap[selectedSize] || sizeMap['F4'];
+      
+      const totalImages = images.length;
+      let pdf = null;
+      
+      for (let i = 0; i < totalImages; i++) {
+        if (conversionCanceled) break;
+        
+        updateProgress((i / totalImages) * 100, `Memproses gambar ${i+1} dari ${totalImages}`, i, totalImages);
+        
+        // Simulasi proses yang memakan waktu
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
+        // Determine page orientation based on image rotation
+        const isLandscape = images[i].rotation === 90 || images[i].rotation === 270;
+        const pageOrientation = isLandscape ? 'landscape' : 'portrait';
+        
+        // Swap dimensions for landscape
+        const pdfPageSize = pageOrientation === 'landscape' ? [pageSize[1], pageSize[0]] : pageSize;
+        
+        // Create PDF with first image or add new page for subsequent images
+        if (i === 0) {
+          pdf = new jsPDF({
+            orientation: pageOrientation,
+            unit: 'mm',
+            format: pdfPageSize
+          });
+        } else {
+          pdf.addPage(pdfPageSize, pageOrientation);
+        }
+        
+        const rotatedImg = await rotateImageToCanvas(images[i].src, images[i].rotation);
+        await addImageToPDF(pdf, rotatedImg, pdfPageSize[0], pdfPageSize[1]);
+      }
+      
+      if (!conversionCanceled && pdf) {
+        updateProgress(100, 'Menyimpan PDF...', totalImages, totalImages);
+        // Small delay to show 100% progress
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Unduh PDF dengan nama file yang ditentukan pengguna
+        pdf.save(filename);
+        hideProgressModal();
+        generateBtn.disabled = false;
+        isConverting = false;
+        
+        // Tampilkan notifikasi sukses
+        alert(`PDF berhasil dibuat dan diunduh dengan nama "${filename}"!`);
+      } else {
+        hideProgressModal();
+        generateBtn.disabled = false;
+        isConverting = false;
+      }
+    });
+
+    function showProgressModal() {
+      progressModal.style.display = 'flex';
+    }
+    
+    function hideProgressModal() {
+      progressModal.style.display = 'none';
+    }
+    
+    function updateProgress(percent, text, current = 0, total = 0) {
+      progressBar.style.width = percent + '%';
+      progressText.textContent = text;
+      
+      if (total > 0) {
+        fileCountElem.textContent = `${current}/${total} gambar diproses`;
+      }
+    }
+
+    async function addImageToPDF(pdf, imgData, pageWidth = 210, pageHeight = 330) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = function () {
+          let imgWidth = img.width;
+          let imgHeight = img.height;
+          const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+          imgWidth *= ratio;
+          imgHeight *= ratio;
+          const x = (pageWidth - imgWidth) / 2;
+          const y = (pageHeight - imgHeight) / 2;
+          pdf.addImage(img, 'JPEG', x, y, imgWidth, imgHeight);
+          resolve();
+        };
+        img.src = imgData;
+      });
+    }
+    
+    function rotateImageToCanvas(src, rotation) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = function () {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // If rotation is 90 or 270 degrees, swap width and height
+          if (rotation === 90 || rotation === 270) {
+            canvas.width = img.height;
+            canvas.height = img.width;
+          } else {
+            canvas.width = img.width;
+            canvas.height = img.height;
+          }
+          
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.save();
+          
+          // Translate to center of canvas
+          ctx.translate(canvas.width / 2, canvas.height / 2);
+          
+          // Rotate the canvas
+          ctx.rotate(rotation * Math.PI / 180);
+          
+          // Draw the image centered
+          ctx.drawImage(img, -img.width / 2, -img.height / 2);
+          
+          ctx.restore();
+          
+          resolve(canvas.toDataURL('image/jpeg', 0.8));
+        };
+        img.src = src;
+      });
+    }
+
+    // Inisialisasi saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+      // Setel tombol A-Z aktif secara default
+      sortAzBtn.classList.add('active');
+      
+      // Setel nama file default berdasarkan tanggal
+      const now = new Date();
+      const dateString = now.toISOString().slice(0, 10).replace(/-/g, '');
+      pdfFilenameInput.value = `dokumen_${dateString}`;
+    });
+  </script>
+</body>
+</html>

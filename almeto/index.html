@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Almeto — Alih Media Tools</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#800000">
+
+  <style>
+    :root {
+      --maroon: #800000;
+      --light: #f8f8f8;
+      --dark: #222;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+
+    body {
+      background: var(--light);
+      color: var(--dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    /* Splash Screen */
+    #splash {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: var(--maroon);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 999;
+      transition: opacity 0.6s ease;
+    }
+    #splash.fade-out { opacity: 0; pointer-events: none; }
+    #splash h1 { font-size: 1.8rem; margin-top: 0.5rem; }
+
+    /* Header */
+    header {
+      width: 100%;
+      padding: 2rem 1rem;
+      background: var(--maroon);
+      color: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    header h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
+    header p { opacity: 0.9; font-size: 0.95rem; }
+
+    /* Main Grid */
+    main {
+      padding: 2rem 1rem;
+      max-width: 900px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .tool-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem 1rem;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+      transition: 0.2s ease-in-out;
+      cursor: pointer;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    }
+
+    .tool-card i {
+      font-size: 2.2rem;
+      color: var(--maroon);
+      margin-bottom: 1rem;
+    }
+
+    .tool-card h3 {
+      font-size: 1.1rem;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .tool-card p {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 1rem;
+      font-size: 0.8rem;
+      color: #777;
+    }
+
+    footer a {
+      color: var(--maroon);
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+
+<body>
+
+  <!-- Splash Screen -->
+  <div id="splash">
+    <i class="fa-solid fa-file-pdf fa-3x"></i>
+    <h1>Almeto</h1>
+    <p style="opacity:0.9;">Memuat Aplikasi...</p>
+  </div>
+
+  <header>
+    <h1><i class="fa-solid fa-file-pdf"></i> Almeto</h1>
+    <p>Alih Media Tools — Solusi Digital Arsiparis Modern</p>
+  </header>
+
+  <main>
+    <div class="tool-card" onclick="location.href='img-to-pdf.html'">
+      <i class="fa-solid fa-image"></i>
+      <h3>Konversi Gambar ke PDF</h3>
+      <p>Ubah kumpulan gambar hasil alih media menjadi satu berkas PDF.</p>
+    </div>
+
+    <div class="tool-card" onclick="location.href='pdf-watermark.html'">
+      <i class="fa-solid fa-stamp"></i>
+      <h3>Tambahkan Watermark</h3>
+      <p>Lindungi dokumen PDF dengan watermark teks atau logo institusi.</p>
+    </div>
+
+    <div class="tool-card" onclick="location.href='pdf-split.html'">
+      <i class="fa-solid fa-scissors"></i>
+      <h3>Pisahkan Halaman PDF</h3>
+      <p>Pecah file PDF menjadi beberapa bagian sesuai kebutuhan.</p>
+    </div>
+
+    <div class="tool-card" onclick="location.href='pdf-merge.html'">
+      <i class="fa-solid fa-layer-group"></i>
+      <h3>Gabungkan File PDF</h3>
+      <p>Satukan beberapa file PDF menjadi satu dokumen lengkap.</p>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 <b>Almeto</b> | Dikembangkan untuk aktualisasi Latsar ASN | <a href="#">Kebijakan Privasi</a></p>
+  </footer>
+
+  <!-- Script: Splash + Domain Protection + PWA -->
+  <script>
+    // Proteksi Domain
+    const allowedDomains = ['tatang.vercel.app'];
+    if (!allowedDomains.includes(location.hostname)) {
+      document.body.innerHTML = '<h2 style="text-align:center;margin-top:20%">Akses tidak sah</h2>';
+    }
+
+    // Splash Fade Out
+    window.addEventListener('load', () => {
+      const splash = document.getElementById('splash');
+      setTimeout(() => splash.classList.add('fade-out'), 1000);
+    });
+
+    // Daftarkan Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(() => console.log('Service Worker terdaftar'));
+    }
+  </script>
+
+</body>
+</html>
